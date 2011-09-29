@@ -1,3 +1,0 @@
-ssh student@lupus 'rm -r ~/program/*'
-scp -r ./src/* student@lupus:program
-ssh -X student@lupus

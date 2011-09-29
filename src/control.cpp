@@ -1,5 +1,6 @@
-#include <control.h>
-#include <MotorControl.h>
+#include "control.h"
+#include "MotorControl.h"
+#include <unistd.h>
 
 void initControl() {
 	initMotors();
@@ -8,7 +9,7 @@ void initControl() {
 void forward(int distance) {
 	setAcceleration(0, 50.00);
 	setVelocity(0, 100.00);
-	setAcceleration(1, -50.00);
+	setAcceleration(1, 50.00);
 	setVelocity(1, -100.00);
 	sleep(distance);
 }
@@ -19,11 +20,11 @@ void turn(int degrees) {
 	if (degrees < 0)
 		modifier = -1;
 
-	setAcceleration(0, 50.00 * modifier);
+	setAcceleration(0, 50.00);
 	setVelocity(0, 100.00 * modifier);
-	setAcceleration(1, 50.00 * modifier);
+	setAcceleration(1, 50.00);
 	setVelocity(1, 100.00 * modifier);
-    sleep((degrees * modifier) / 60);
+    sleep((degrees * modifier) / 100);
 }
 
 void stop() {

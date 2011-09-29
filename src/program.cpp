@@ -1,7 +1,7 @@
 #include <libpowerbutton.h>
 #include <stdio.h>
 #include <phidget21.h>
-#include <control.h>
+#include "control.h"
 
 int main (int argc, char *argv[])
 {
@@ -16,11 +16,11 @@ int main (int argc, char *argv[])
     {
     	if (current != power_button_get_value()) {
     		printf("Button pressed %i times.\n",current+1);
-    		forward(5);
+    		forward(2);
     		turn(-180);
-    		forward(10);
-    		turn(90);
     		forward(3);
+    		turn(90);
+    		forward(1);
     		stop();
     	}
 
