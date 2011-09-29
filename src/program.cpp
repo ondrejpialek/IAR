@@ -1,11 +1,11 @@
 #include <libpowerbutton.h>
 #include <stdio.h>
 #include <phidget21.h>
-#include "MotorControl.h"
+#include <control.h>
 
 int main (int argc, char *argv[])
 {
-	init();
+	initControl();
 	printf("Max acceleration, motor 0: %f",getMaxAcceleration(0));
 	printf("Max acceleration, motor 1: %f",getMaxAcceleration(1));
 
@@ -16,21 +16,19 @@ int main (int argc, char *argv[])
     {
     	if (current != power_button_get_value()) {
     		printf("Button pressed %i times.\n",current+1);
-    		setAcceleration(0, 50.00);
-    		setVelocity(0, 100.00);
-    		setAcceleration(1, 50.00);
-    		setVelocity(1, 100.00);
-    	    sleep(2);
-    		setAcceleration(0, 0.00);
-    		setVelocity(0, 0.00);
-    		setAcceleration(1, 0.00);
-    		setVelocity(1, 0.00);
+    		forward(5);
+    		turn(-180);
+    		forward(10);
+    		turn(90);
+    		forward(3);
+    		stop();
     	}
 
     	current = power_button_get_value();
     	sleep(1);
     }
+
+    releaseControl();
     power_button_reset();
-    close();
     return 0;
 };

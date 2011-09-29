@@ -4,7 +4,7 @@
 
 CPhidgetMotorControlHandle handle;
 
-void close() {
+void closeMotors() {
 	CPhidget_close((CPhidgetHandle)handle);
 	CPhidget_delete((CPhidgetHandle)handle);
 }
@@ -59,7 +59,7 @@ int CurrentChangeHandler(CPhidgetMotorControlHandle MC, void *usrptr, int Index,
 }
 
 
-void init() {
+void initMotors() {
 	int result;
 	const char* err;
 

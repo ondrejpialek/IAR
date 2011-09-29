@@ -3,8 +3,8 @@
 #ifndef MOTORCONTROL_H_
 #define MOTORCONTROL_H_
 
-	void init();
-	void close();
+	void initMotors();
+	void closeMotors();
 
 	void setVelocity(int motor, double velocity);
 	void setAcceleration(int motor, double velocity);
