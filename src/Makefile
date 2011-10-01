@@ -1,2 +1,2 @@
 default:
-	g++ program.cpp MotorControl.cpp control.cpp -o program -lphidget21 -lpowerbutton
+	g++ program.cpp motorControl.cpp control.cpp distanceSensors.cpp distance.cpp phidget.cpp -o program -lphidget21 -lrt -lpowerbutton

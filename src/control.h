@@ -1,12 +1,13 @@
 #ifndef CONTROL_H_
 #define CONTROL_H_
 
-#include "MotorControl.h"
+#include "motorControl.h"
 
 void initControl();
-void forward(int distance);
+void move(int distance);
 void turn(int degrees);
 void stop();
+void controlTick(double diff);
 void releaseControl();
 
 #endif /* CONTROL_H_ */

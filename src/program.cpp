@@ -2,10 +2,41 @@
 #include <stdio.h>
 #include <phidget21.h>
 #include "control.h"
+#include "distance.h"
+#include <sys/time.h>
 
 int main (int argc, char *argv[])
 {
 	initControl();
+	initDistance();
+
+	sleep(10);
+
+	timespec current;
+	timespec old;
+
+	clock_gettime(CLOCK_MONOTONIC, &current);
+	while(true) {
+		old = current;
+		double diff = (current.tv_nsec - old.tv_nsec) / 1000000;
+		clock_gettime(CLOCK_MONOTONIC, &current);
+
+		int distance = getFrontDistance();
+		printf("Distance: %d]\n", distance);
+
+		if (distance < 100) {
+			move(-10);
+		} if (distance < 200) {
+			turn(138);
+		} else {
+			move(10);
+		}
+
+		sleep(0);
+	}
+	return 0;
+
+	/*initControl();
 	printf("Max acceleration, motor 0: %f",getMaxAcceleration(0));
 	printf("Max acceleration, motor 1: %f",getMaxAcceleration(1));
 
@@ -30,5 +61,5 @@ int main (int argc, char *argv[])
 
     releaseControl();
     power_button_reset();
-    return 0;
+    return 0;*/
 };
