@@ -3,9 +3,12 @@
 
 #include "motorControl.h"
 
+extern double LEFT_MOTOR_MODIFIER;
+extern double RIGHT_MOTOR_MODIFIER;
+
 void initControl();
-void move(int distance);
-void turn(int degrees);
+void move(double distance);
+void turn(double degrees);
 void stop();
 void controlTick(double diff);
 void releaseControl();

@@ -10,7 +10,7 @@ int main (int argc, char *argv[])
 	initControl();
 	initDistance();
 
-	sleep(10);
+	sleep(2);
 
 	timespec current;
 	timespec old;
@@ -22,17 +22,17 @@ int main (int argc, char *argv[])
 		clock_gettime(CLOCK_MONOTONIC, &current);
 
 		int distance = getFrontDistance();
-		printf("Distance: %d]\n", distance);
-
+		printf("Distance: %d\n", distance);
+/*
 		if (distance < 100) {
 			move(-10);
 		} if (distance < 200) {
 			turn(138);
 		} else {
 			move(10);
-		}
+		}*/
 
-		sleep(0);
+		sleep(1);
 	}
 	return 0;
 

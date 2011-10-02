@@ -84,7 +84,7 @@ void initDistanceSensors() {
 		//Change the sensitivity trigger of the sensors
 		for(i = 0; i < numSensors; i++)
 		{
-			CPhidgetInterfaceKit_setSensorChangeTrigger(ifKit, i, 100);  //we'll just use 10 for fun
+			CPhidgetInterfaceKit_setSensorChangeTrigger(ifKit, i, 20);
 		}
 }
 

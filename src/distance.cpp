@@ -5,5 +5,5 @@ void initDistance() {
 }
 
 int getFrontDistance() {
-	return 4800 / ((readings[1]/4.095) - 20);
+	return 4080 / (readings[1] - 20);
 }
