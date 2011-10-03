@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
 	double diff = (current.tv_sec - old.tv_sec) + ((current.tv_nsec - old.tv_nsec) / NANOSECONDS_PER_SECOND);
 
 
-	printf("diff: %f\n", diff);
+	printf("diff: %fn", diff);
 
 	sleep(1);
 	i++;

@@ -22,11 +22,8 @@ int DetachHandler(CPhidgetHandle MC, void *userptr)
 
     CPhidget_getDeviceName(MC, &name);
     CPhidget_getSerialNumber(MC, &serialNo);
-    
-    #ifndef SILENT
     printf("%s %10d detached!\n", name, serialNo);
-    #endif
-    
+
     return 0;
 }
 

@@ -30,9 +30,7 @@ int VelocityChangeHandler(CPhidgetMotorControlHandle MC, void *usrptr, int Index
 
 int CurrentChangeHandler(CPhidgetMotorControlHandle MC, void *usrptr, int Index, double Value)
 {
-    #ifndef SILENT
     printf("Motor: %d > Current Draw: %f\n", Index, Value);
-    #endif
     return 0;
 }
 

@@ -37,7 +37,7 @@ void turn(double degrees)
     setVelocity(0, LEFT_MOTOR_MODIFIER * 100.00 * modifier);
     setAcceleration(1, RIGHT_MOTOR_MODIFIER * ACCELERATION);
     setVelocity(1, -1 * RIGHT_MOTOR_MODIFIER * 100.00 * modifier);
-    remaining = (degrees * modifier) / 290;
+    remaining = (degrees * modifier) / 300;
 }
 
 void stop()

@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
 	    printf("WT: turning from whisker\n");
 	    turn(45);
 	} else if ((left < 10 || left > 500) && (right < 10 || right > 500)) {
-	    move(20);
+	    move(DBL_MAX);
 	    printf("CLEAR: forward\n");
 	} else if (left > 10 && left < 60) {
 	    turn(60);
@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
 	    turn(-60);
 	    printf("RG: left\n");
 	} else {
-	    move(20);
+	    move(DBL_MAX);
 	    printf("EL: forward\n");
 	}
 	printf("\n");

@@ -26,7 +26,7 @@ int InputChangeHandler(CPhidgetInterfaceKitHandle IFK, void *usrptr, int i, int 
     printf("Input: %d > Value: %d\n", i, v);
     #endif
     inputReadings[i] = v;
-    clock_gettime(CLOCK_MONOTONIC, &inputTime[i]);
+    clock_gettime(CLOCK_MONOTONIC, inputTime[i]);
         
     return 0;
 }

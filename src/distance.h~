@@ -2,8 +2,6 @@
 #ifndef DISTANCE_H_
 #define DISTANCE_H_
 
-#define NANOSECONDS_PER_SECOND 1E9
-
 void initDistance();
 void closeDistance();
 
