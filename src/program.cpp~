@@ -71,23 +71,25 @@ int main(int argc, char *argv[])
 	    wasWhisker -= diff;
 	    printf("WT: turning from whisker\n");
 	    turn(45);
-	} else if ((left < 10 || left > 500) && (right < 10 || right > 500)) {
-	    move(DBL_MAX);
+	} else if ((left < 8 || left > 500) && (right < 8 || right > 500)) {
+	    move(20);
 	    printf("CLEAR: forward\n");
-	} else if (left > 10 && left < 60) {
-	    turn(60);
+	} else if (left > 8 && left < 45) {
+	    turn(-50);
 	    printf("LE: right\n");
- 	} else if (right > 10 && right < 60) {
-	    turn(-60);
+ 	} else if (right > 8 && right < 45) {
+	    turn(50);
 	    printf("RG: left\n");
 	} else {
-	    move(DBL_MAX);
+	    move(20);
 	    printf("EL: forward\n");
 	}
 	printf("\n");
-	msleep(250);
+	msleep(150);
     }
 
+    stop();
+    closeDistance();
     releaseControl();
     power_button_reset();
 

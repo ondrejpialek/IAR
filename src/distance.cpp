@@ -37,10 +37,10 @@ bool getWhisker(int sensor) {
     
     double diff = (now.tv_sec - then.tv_sec) + ((now.tv_nsec - then.tv_nsec) / NANOSECONDS_PER_SECOND);
     
-    if (diff < 0.5) {
+    if (diff < 0.2) {
 	return false;
     } else {
-	return inputReadings[0] == 1;
+	return inputReadings[sensor] == 1;
     }
 }
 
