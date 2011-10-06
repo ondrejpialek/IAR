@@ -4,6 +4,12 @@
 
 #define NANOSECONDS_PER_SECOND 1E9
 
+class Sensing : public InterfaceKitCallbackHandler {
+  public:
+    virtual void SensorChangeHandler(int index, int value) = 0;
+    virtual void InputChangeHandler(int index, int value) = 0;
+}
+
 void initDistance();
 void closeDistance();
 

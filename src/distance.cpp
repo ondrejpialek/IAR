@@ -1,7 +1,7 @@
 #include <time.h>
 
 #include "distance.h"
-#include "distanceSensors.h"
+#include "interfaceKit.h"
 
 
 void initDistance()
