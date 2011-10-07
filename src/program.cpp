@@ -6,7 +6,7 @@
 #include <phidget21.h>
 
 #include "control.h"
-#include "distance.h"
+#include "sensing.h"
 
 
 int msleep(unsigned long milisec)
@@ -23,10 +23,13 @@ int msleep(unsigned long milisec)
 
 int main(int argc, char *argv[])
 {
+  
     double wasWhisker = 0;
   
     initControl();
-    initDistance();
+    
+    Sensing* sensing = new Sensing();
+    sensing->init();
 
     msleep(1000);
 
@@ -47,23 +50,25 @@ int main(int argc, char *argv[])
 	
 	controlTick(diff);
 
-	int left = getLeftDistance();
-	int right = getRightDistance();
+	int left = sensing->getLeftDistance();
+	int right = sensing->getRightDistance();
+	bool fWhisker = sensing->getFrontWhisker();
+	bool bWhisker = sensing->getBackWhisker();
 	
 	printf("L:%8d R:%8d\n", left, right);
 
-	if (getBackWhisker() && getFrontWhisker()) {
+	if (bWhisker && fWhisker) {
 	    double mod = 1;
 	    if (left > right) {
 		mod = -1;
 	    }
 	    turn(mod * 90);
 	    printf("WW: PANIC\n");
-	} else if (getBackWhisker()) {
+	} else if (bWhisker) {
 	    wasWhisker = 2;
 	    printf("BW: forward\n");
 	    move(20);
-	} else if (getFrontWhisker()) {
+	} else if (fWhisker) {
 	    wasWhisker = 2;
 	    printf("FW: back\n");
 	    move(-20);
@@ -89,7 +94,7 @@ int main(int argc, char *argv[])
     }
 
     stop();
-    closeDistance();
+    delete sensing;
     releaseControl();
     power_button_reset();
 
