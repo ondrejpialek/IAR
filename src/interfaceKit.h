@@ -6,16 +6,20 @@
 #include <time.h>
 
 class InterfaceKitCallbackHandler {
-  private:
-    CPhidgetInterfaceKitHandle ifKit;
-  
-  public:
-    void init();
-    virtual void OnSensorChange(int index, int value) = 0;
-    virtual void OnInputChange(int index, int value) = 0;
-    
-    InterfaceKitCallbackHandler();
-    virtual ~InterfaceKitCallbackHandler();
+    private:
+        bool initialized;
+        CPhidgetInterfaceKitHandle ifKit;
+        
+    protected:
+        void ensureInitialized();
+        void virtual initialize();
+        
+    public:
+        virtual void OnSensorChange(int index, int value) = 0;
+        virtual void OnInputChange(int index, int value) = 0;
+        
+        InterfaceKitCallbackHandler();
+        virtual ~InterfaceKitCallbackHandler();
 };
 
 #endif /* INTERFACEKIT_H_ */

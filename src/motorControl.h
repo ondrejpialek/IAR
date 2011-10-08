@@ -3,13 +3,21 @@
 
 #include <phidget21.h>
 
-void initMotors();
-void closeMotors();
+class MotorControl {
+    private:
+        CPhidgetMotorControlHandle controlHandle;
+        bool initialized;
+        void ensureInitialized();
+        
+    public: 
+        MotorControl();
+        virtual ~MotorControl();
+        
+        void setVelocity(int motor, double velocity);
+        void setAcceleration(int motor, double velocity);
+};
 
-void setVelocity(int motor, double velocity);
-void setAcceleration(int motor, double velocity);
-double getMaxVelocity(int motor);
-double getMaxAcceleration(int motor);
+
 
 
 #endif /* MOTORCONTROL_H_ */

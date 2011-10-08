@@ -6,11 +6,21 @@
 extern double LEFT_MOTOR_MODIFIER;
 extern double RIGHT_MOTOR_MODIFIER;
 
-void initControl();
-void move(double distance);
-void turn(double degrees);
-void stop();
-void controlTick(double diff);
-void releaseControl();
+class Control {
+    private:
+        double remaining;
+        bool initialized;
+        void ensureInitialized();
+        MotorControl* control;
+        
+    public:
+        Control();
+        ~Control();
+        
+        void move(double distance);
+        void turn(double degrees);
+        void stop();
+        void controlTick(double diff);        
+};
 
 #endif /* CONTROL_H_ */

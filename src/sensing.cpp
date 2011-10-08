@@ -24,16 +24,6 @@ int Sensing::getDistance(int sensor)
     return 4080 / (sensorReadings[sensor] - 20);
 }
 
-int Sensing::getLeftDistance()
-{
-    return getDistance(1);
-}
-
-int Sensing::getRightDistance()
-{
-    return getDistance(2);
-}
-
 bool Sensing::getWhisker(int sensor) {
     timespec now, then;
     clock_gettime(CLOCK_MONOTONIC, &now);
@@ -43,18 +33,32 @@ bool Sensing::getWhisker(int sensor) {
     double diff = (now.tv_sec - then.tv_sec) + ((now.tv_nsec - then.tv_nsec) / NANOSECONDS_PER_SECOND);
     
     if (diff < 0.2) {
-	return false;
+        return false;
     } else {
-	return inputReadings[sensor] == 1;
+        return inputReadings[sensor] == 1;
     }
+}
+
+int Sensing::getLeftDistance()
+{
+    ensureInitialized();
+    return getDistance(1);
+}
+
+int Sensing::getRightDistance()
+{
+    ensureInitialized();
+    return getDistance(2);
 }
 
 bool Sensing::getFrontWhisker()
 {
+    ensureInitialized();
     return getWhisker(1);
 }
 
 bool Sensing::getBackWhisker()
 {
+    ensureInitialized();
     return getWhisker(0);
 }
