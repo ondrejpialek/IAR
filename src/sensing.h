@@ -10,9 +10,12 @@ class Sensing : public InterfaceKitCallbackHandler {
         int sensorReadings[8];
         timespec inputTime[8];
         int inputReadings[8];
+        int grayFloorLevel;
+        
         
         int getDistance(int sensor);
         bool getWhisker(int sensor);
+        bool isOnBlack(int sensor);
         
     public:
         Sensing();
@@ -21,10 +24,14 @@ class Sensing : public InterfaceKitCallbackHandler {
         virtual void OnSensorChange(int index, int value);
         virtual void OnInputChange(int index, int value);
         
+        void adjustFloorLevel();
+        
         int getLeftDistance();
         int getRightDistance();
         bool getFrontWhisker();
         bool getBackWhisker();
+        bool isLeftOnBlack();
+        bool isRightOnBlack();
 };
 
 #endif /* SENSING_H_ */

@@ -3,7 +3,12 @@
 #include "sensing.h"
 #include "interfaceKit.h"
 
-Sensing::Sensing() : InterfaceKitCallbackHandler() { }
+#define MIN(X,Y) ((X) < (Y) ? (X) : (Y))
+
+
+Sensing::Sensing() : InterfaceKitCallbackHandler() {
+    grayFloorLevel = 20;
+}
 
 Sensing::~Sensing() { }
 
@@ -39,6 +44,16 @@ bool Sensing::getWhisker(int sensor) {
     }
 }
 
+bool Sensing::isOnBlack(int sensor) {
+    return (sensorReadings[sensor] <= grayFloorLevel - 3); 
+}
+
+void Sensing::adjustFloorLevel() {
+    ensureInitialized();
+    grayFloorLevel = MIN(sensorReadings[3], sensorReadings[4]);
+    printf("FLOOR: %d", grayFloorLevel);
+}
+
 int Sensing::getLeftDistance()
 {
     ensureInitialized();
@@ -61,4 +76,14 @@ bool Sensing::getBackWhisker()
 {
     ensureInitialized();
     return getWhisker(0);
+}
+
+bool Sensing::isLeftOnBlack() {
+    ensureInitialized();
+    return isOnBlack(3);    
+}
+
+bool Sensing::isRightOnBlack() {
+    ensureInitialized();
+    return isOnBlack(4);    
 }

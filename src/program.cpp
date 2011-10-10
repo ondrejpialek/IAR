@@ -7,6 +7,7 @@
 
 #include "control.h"
 #include "sensing.h"
+#include "strategy.h"
 
 
 int msleep(unsigned long milisec)
@@ -22,15 +23,16 @@ int msleep(unsigned long milisec)
 }
 
 int main(int argc, char *argv[])
-{
-    
-    double wasWhisker = 0;
-        
+{        
     Sensing* sensing = new Sensing();    
-    Control* control = new Control();
+    Control* control = new Control();    
     
+    Strategy* strategies [] = { new FindSiteStrategy(sensing, control), new HitButtonStrategy(sensing, control) };
+    int STRATEGIES_COUNT = 2;
     
-    msleep(1000);
+    sensing->adjustFloorLevel();
+    msleep(2000);
+    sensing->adjustFloorLevel();
     
     int pwr = power_button_get_value();
     
@@ -40,59 +42,39 @@ int main(int argc, char *argv[])
     clock_gettime(CLOCK_MONOTONIC, &current);
     while (pwr == power_button_get_value()) {
         printf("-------------------------------\n");
-        old = current;
-        clock_gettime(CLOCK_MONOTONIC, &current);
         
+        double bestUtility = -1;
+        int st = 0;
+        Strategy* strategy = 0;
+        for (int i = 0; i < STRATEGIES_COUNT; i++) {
+            Strategy* s = strategies[i];
+            double util = s->getUtility();
+            if (util > bestUtility) {
+                strategy = s;
+                bestUtility = util;
+                st = i;
+            }
+        }
+
+        old = current;
+        clock_gettime(CLOCK_MONOTONIC, &current);  
         double diff = (current.tv_sec - old.tv_sec) + ((current.tv_nsec - old.tv_nsec) / NANOSECONDS_PER_SECOND);
         
-        printf("T: %f\n", diff);
+        printf("T: %f, S: %d\n", diff, st);
         
         control->controlTick(diff);
+        strategy->step(diff);
         
-        int left = sensing->getLeftDistance();
-        int right = sensing->getRightDistance();
-        bool fWhisker = sensing->getFrontWhisker();
-        bool bWhisker = sensing->getBackWhisker();
         
-        printf("L:%8d R:%8d\n", left, right);
-        
-        if (bWhisker && fWhisker) {
-            double mod = 1;
-            if (left > right) {
-                mod = -1;
-            }
-            control->turn(mod * 90);
-            printf("WW: PANIC\n");
-        } else if (bWhisker) {
-            wasWhisker = 0.8;
-            printf("BW: forward\n");
-            control->move(20);
-        } else if (fWhisker) {
-            wasWhisker = 0.8;
-            printf("FW: back\n");
-            control->move(-20);
-        } else if (wasWhisker > 0) {
-            wasWhisker -= diff;
-            printf("WT: turning from whisker\n");
-            control->turn(45);
-        } else if ((left < 8 || left > 500) && (right < 8 || right > 500)) {
-            control->move(20);
-            printf("CLEAR: forward\n");
-        } else if (left > 8 && left < 45) {
-            control->turn(-50);
-            printf("LE: right\n");
-        } else if (right > 8 && right < 45) {
-            control->turn(50);
-            printf("RG: left\n");
-        } else {
-            control->move(20);
-            printf("EL: forward\n");
-        }
         printf("\n");
         msleep(150);
     }
     
     control->stop();
+    
+    for (int i = 0; i < STRATEGIES_COUNT; i++) {
+        delete strategies[i];
+    }
     
     delete sensing;
     delete control;
