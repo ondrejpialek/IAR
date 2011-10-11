@@ -39,21 +39,21 @@ int main(int argc, char *argv[])
     
     int i = 0;
     while (i++ < 5) {
-	old = current;
-	clock_gettime(CLOCK_MONOTONIC, &current);
+        old = current;
+        clock_gettime(CLOCK_MONOTONIC, &current);
 
-	double diff = (current.tv_sec - old.tv_sec) + ((current.tv_nsec - old.tv_nsec) / NANOSECONDS_PER_SECOND);
+        double diff = (current.tv_sec - old.tv_sec) + ((current.tv_nsec - old.tv_nsec) / NANOSECONDS_PER_SECOND);
 
-	printf("T: %f\n", diff);
-	
-	controlTick(diff);
+        printf("T: %f\n", diff);
+        
+        controlTick(diff);
 
-	int left = getLeftDistance();
-	int right = getRightDistance();
-	
-	printf("L:%8d R:%8d\n", left, right);	
-	
-	msleep(100);
+        int left = getLeftDistance();
+        int right = getRightDistance();
+        
+        printf("L:%8d R:%8d\n", left, right);	
+        
+        msleep(100);
     }
 
     releaseControl();

@@ -9,9 +9,9 @@ int SensorChangeHandler(CPhidgetInterfaceKitHandle IFK, void *usrptr, int i, int
     #ifndef SILENT 
     printf("Sensor: %d > Value: %d\n", i, v);
     #endif
-    if (i ==3 || i == 4) {
+    /*if (i == 5) {
         printf("Sensor: %d > Value: %d\n", i, v);
-    }
+    }*/
     
     InterfaceKitCallbackHandler* handler = (InterfaceKitCallbackHandler*)usrptr;
     handler->OnSensorChange(i, v);
@@ -65,7 +65,7 @@ void InterfaceKitCallbackHandler::initialize() {
     
     CPhidgetInterfaceKit_getSensorCount(ifKit, &numSensors);
     for (i = 0; i < numSensors; i++) {
-        CPhidgetInterfaceKit_setSensorChangeTrigger(ifKit, i, 2);
+        CPhidgetInterfaceKit_setSensorChangeTrigger(ifKit, i, 1);
     }  
 }
 

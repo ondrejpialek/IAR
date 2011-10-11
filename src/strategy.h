@@ -10,7 +10,7 @@ class Strategy {
         Control* control;
     
     public:
-        virtual void step(double delta) = 0;
+        virtual void step(double delta, bool firstRun) = 0;
         virtual double getUtility() = 0;
         
         Strategy(Sensing* sensing, Control* control);
@@ -21,17 +21,27 @@ class FindSiteStrategy : public Strategy {
         double wasWhisker;
     
     public:
-        virtual void step(double delta);
+        virtual void step(double delta, bool firstRun);
         virtual double getUtility();
         
-        FindSiteStrategy(Sensing* sensing, Control* control) : Strategy(sensing, control) {
-        
-        };
+        FindSiteStrategy(Sensing* sensing, Control* control) : Strategy(sensing, control) { };
 };
 
+enum HitButtonStrategyTask { Align, GetWhiskerContact, FindCentre, PushTheButton };
+
 class HitButtonStrategy : public Strategy {
+    private:
+        HitButtonStrategyTask currentTask;
+        bool cameFromLeft;
+        int turnDirection;
+        double directionProtection;
+        double distances [256];
+        int distanceCount;
+        double getDeviation(int distance);
+        void reset();
+    
     public:
-        virtual void step(double delta);
+        virtual void step(double delta, bool firstRun);
         virtual double getUtility();
         
         HitButtonStrategy(Sensing* sensing, Control* control) : Strategy(sensing, control) { };

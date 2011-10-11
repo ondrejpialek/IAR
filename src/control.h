@@ -12,13 +12,17 @@ class Control {
         bool initialized;
         void ensureInitialized();
         MotorControl* control;
+        void turn(double degrees, double velocity);
         
     public:
         Control();
         ~Control();
         
         void move(double distance);
+        void moveSlow(double distance);
         void turn(double degrees);
+        void turnSlow(double degrees);
+        void turnSingle(double degrees);
         void stop();
         void controlTick(double diff);        
 };

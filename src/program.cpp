@@ -30,21 +30,25 @@ int main(int argc, char *argv[])
     Strategy* strategies [] = { new FindSiteStrategy(sensing, control), new HitButtonStrategy(sensing, control) };
     int STRATEGIES_COUNT = 2;
     
-    sensing->adjustFloorLevel();
-    msleep(2000);
-    sensing->adjustFloorLevel();
-    
+
     int pwr = power_button_get_value();
+    while(pwr == power_button_get_value()) {
+        msleep(500);
+    }
+    sensing->adjustFloorLevel();   
+
     
     timespec current;
     timespec old;
-    
     clock_gettime(CLOCK_MONOTONIC, &current);
+    
+    pwr = power_button_get_value();
+    Strategy* oldStrategy = 0;
     while (pwr == power_button_get_value()) {
         printf("-------------------------------\n");
         
         double bestUtility = -1;
-        int st = 0;
+        int strategyIndex = 0;
         Strategy* strategy = 0;
         for (int i = 0; i < STRATEGIES_COUNT; i++) {
             Strategy* s = strategies[i];
@@ -52,25 +56,27 @@ int main(int argc, char *argv[])
             if (util > bestUtility) {
                 strategy = s;
                 bestUtility = util;
-                st = i;
+                strategyIndex = i;
             }
         }
+
+        //printf("S: %d\n", sensing->getSonarDistance());
 
         old = current;
         clock_gettime(CLOCK_MONOTONIC, &current);  
         double diff = (current.tv_sec - old.tv_sec) + ((current.tv_nsec - old.tv_nsec) / NANOSECONDS_PER_SECOND);
         
-        printf("T: %f, S: %d\n", diff, st);
+        //printf("T: %f, S: %d\n", diff, strategyIndex);
         
         control->controlTick(diff);
-        strategy->step(diff);
+        strategy->step(diff, strategy != oldStrategy);
+        oldStrategy = strategy;
         
-        
-        printf("\n");
-        msleep(150);
+        msleep(70);
     }
     
     control->stop();
+    msleep(80);
     
     for (int i = 0; i < STRATEGIES_COUNT; i++) {
         delete strategies[i];

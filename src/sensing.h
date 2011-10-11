@@ -2,18 +2,16 @@
 #define SENSING_H_
 
 #include "interfaceKit.h"
-
-#define NANOSECONDS_PER_SECOND 1E9
+#include "averagedArray.h"
 
 class Sensing : public InterfaceKitCallbackHandler {
     private:        
-        int sensorReadings[8];
-        timespec inputTime[8];
-        int inputReadings[8];
-        int grayFloorLevel;
-        
+        AveragedArray<int>* sensorReadings[8];
+        AveragedArray<int>* inputReadings[8];
+        int grayFloorLevel[2];
         
         int getDistance(int sensor);
+        int getSonarDistance(int sensor);
         bool getWhisker(int sensor);
         bool isOnBlack(int sensor);
         
@@ -32,6 +30,7 @@ class Sensing : public InterfaceKitCallbackHandler {
         bool getBackWhisker();
         bool isLeftOnBlack();
         bool isRightOnBlack();
+        int getSonarDistance();
 };
 
 #endif /* SENSING_H_ */
