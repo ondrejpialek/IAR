@@ -12,7 +12,7 @@ class Sensing : public InterfaceKitCallbackHandler {
         
         int getDistance(int sensor);
         int getSonarDistance(int sensor);
-        bool getWhisker(int sensor);
+        bool getInput(int sensor);
         bool isOnBlack(int sensor);
         
     public:
@@ -26,10 +26,14 @@ class Sensing : public InterfaceKitCallbackHandler {
         
         int getLeftDistance();
         int getRightDistance();
-        bool getFrontWhisker();
-        bool getBackWhisker();
+        bool getLeftWhisker();
+        bool getRightWhisker();
+        bool getLeftBumper();
+        bool getRightBumper();
         bool isLeftOnBlack();
         bool isRightOnBlack();
+        int getLeftLight();
+        int getRightLight();
         int getSonarDistance();
 };
 

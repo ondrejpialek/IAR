@@ -59,14 +59,16 @@ int main(int argc, char *argv[])
                 strategyIndex = i;
             }
         }
+/*
+printf("R: %d\n", sensing->getRightLight());
 
-        //printf("S: %d\n", sensing->getSonarDistance());
+printf("L: %d\n", sensing->getLeftLight());*/
 
         old = current;
         clock_gettime(CLOCK_MONOTONIC, &current);  
         double diff = (current.tv_sec - old.tv_sec) + ((current.tv_nsec - old.tv_nsec) / NANOSECONDS_PER_SECOND);
         
-        //printf("T: %f, S: %d\n", diff, strategyIndex);
+        printf("T: %f, S: %d\n", diff, strategyIndex);
         
         control->controlTick(diff);
         strategy->step(diff, strategy != oldStrategy);
@@ -76,7 +78,7 @@ int main(int argc, char *argv[])
     }
     
     control->stop();
-    msleep(80);
+    msleep(100);
     
     for (int i = 0; i < STRATEGIES_COUNT; i++) {
         delete strategies[i];

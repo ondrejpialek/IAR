@@ -9,7 +9,7 @@
 Sensing::Sensing() : InterfaceKitCallbackHandler() {
     grayFloorLevel = { 20, 20 };
     for (int i = 0; i < 8; i++) {
-        inputReadings[i] = new AveragedArray<int>(0.2);
+        inputReadings[i] = new AveragedArray<int>(0.1);
         sensorReadings[i] = new AveragedArray<int>(0.2);
     }
 }
@@ -40,7 +40,7 @@ int Sensing::getSonarDistance(int sensor)
     return sensorReadings[sensor]->getLatest() * 1.296;
 }
 
-bool Sensing::getWhisker(int sensor) {
+bool Sensing::getInput(int sensor) {
     return inputReadings[sensor]->getLatest();
 }
 
@@ -78,24 +78,46 @@ int Sensing::getSonarDistance()
     return getSonarDistance(6);
 }
 
-bool Sensing::getFrontWhisker()
+bool Sensing::getLeftWhisker()
 {
     ensureInitialized();
-    return getWhisker(1);
+    return getInput(1);
 }
 
-bool Sensing::getBackWhisker()
+bool Sensing::getRightWhisker()
 {
     ensureInitialized();
-    return getWhisker(0);
+    return getInput(4);
+}
+
+bool Sensing::getLeftBumper()
+{
+    ensureInitialized();
+    return getInput(3);
+}
+
+bool Sensing::getRightBumper()
+{
+    ensureInitialized();
+    return getInput(2);
 }
 
 bool Sensing::isLeftOnBlack() {
     ensureInitialized();
-    return isOnBlack(3);    
+    return isOnBlack(4);    
 }
 
 bool Sensing::isRightOnBlack() {
     ensureInitialized();
-    return isOnBlack(4);    
+    return isOnBlack(3);    
+}
+
+int Sensing::getRightLight() {
+    ensureInitialized();
+    return sensorReadings[3]->getLatest();
+}
+
+int Sensing::getLeftLight() {
+    ensureInitialized();
+    return sensorReadings[4]->getLatest();
 }

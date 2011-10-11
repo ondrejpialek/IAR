@@ -18,7 +18,7 @@ class Strategy {
 
 class FindSiteStrategy : public Strategy {
     private:
-        double wasWhisker;
+        double wasBumper;
     
     public:
         virtual void step(double delta, bool firstRun);
@@ -27,17 +27,17 @@ class FindSiteStrategy : public Strategy {
         FindSiteStrategy(Sensing* sensing, Control* control) : Strategy(sensing, control) { };
 };
 
-enum HitButtonStrategyTask { Align, GetWhiskerContact, FindCentre, PushTheButton };
+enum HitButtonStrategyTask { Align, TurnToWall, PushTheButton, BackTrack };
 
 class HitButtonStrategy : public Strategy {
     private:
         HitButtonStrategyTask currentTask;
         bool cameFromLeft;
+        double turningToButton;
+        double turningProtection;
         int turnDirection;
+        int maxDistanceWhileTurning;
         double directionProtection;
-        double distances [256];
-        int distanceCount;
-        double getDeviation(int distance);
         void reset();
     
     public:
