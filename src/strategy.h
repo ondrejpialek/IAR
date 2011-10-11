@@ -27,7 +27,7 @@ class FindSiteStrategy : public Strategy {
         FindSiteStrategy(Sensing* sensing, Control* control) : Strategy(sensing, control) { };
 };
 
-enum HitButtonStrategyTask { Align, TurnToWall, PushTheButton, BackTrack };
+enum HitButtonStrategyTask { Align, TurnToWall, PushTheButton, BackTrack, VictoryDance };
 
 class HitButtonStrategy : public Strategy {
     private:
@@ -37,6 +37,9 @@ class HitButtonStrategy : public Strategy {
         double turningProtection;
         int turnDirection;
         int maxDistanceWhileTurning;
+        bool bumperReaction;
+        double victoryBacking;
+        double dancing;
         double directionProtection;
         void reset();
     

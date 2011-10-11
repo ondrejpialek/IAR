@@ -10,7 +10,7 @@ Sensing::Sensing() : InterfaceKitCallbackHandler() {
     grayFloorLevel = { 20, 20 };
     for (int i = 0; i < 8; i++) {
         inputReadings[i] = new AveragedArray<int>(0.1);
-        sensorReadings[i] = new AveragedArray<int>(0.2);
+        sensorReadings[i] = new AveragedArray<int>(0.3);
     }
 }
 
@@ -46,7 +46,7 @@ bool Sensing::getInput(int sensor) {
 
 bool Sensing::isOnBlack(int sensor) {
     int gray = grayFloorLevel[sensor - 3];
-    bool black = (sensorReadings[sensor]->getLatest() <= gray - 15) || (sensorReadings[sensor]->getLatest() >= gray + 30);
+    bool black = (sensorReadings[sensor]->getLatest() <= gray - 8) || (sensorReadings[sensor]->getLatest() >= gray + 30);
    /* if (black) {
         printf("BLACK DETECTED F: %d, R:%d\n", gray, sensorReadings[sensor]->getLatest());    
     }*/
@@ -114,10 +114,10 @@ bool Sensing::isRightOnBlack() {
 
 int Sensing::getRightLight() {
     ensureInitialized();
-    return sensorReadings[3]->getLatest();
+    return sensorReadings[5]->getLatest();
 }
 
 int Sensing::getLeftLight() {
     ensureInitialized();
-    return sensorReadings[4]->getLatest();
+    return sensorReadings[6]->getLatest();
 }

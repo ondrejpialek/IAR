@@ -108,11 +108,19 @@ void HitButtonStrategy::step(double delta, bool firstRun) {
             }
             
             int diff = (l - r) * -1;
-            
-            if (fabs(diff) > 3) {
-                control->turnSlow(diff*4);
-            } else if (l > 10) {
-                control->moveSlow(10);
+            if (!(sensing->getLeftBumper() || sensing->getRightBumper())) {
+                if (fabs(diff) > 3) {
+                    control->turnSlow(diff*4);
+                } else if (l > 8) {
+                    control->moveSlow(10);
+                } else {
+                    control->stop();
+                    
+                    maxDistanceWhileTurning = 0;
+                    currentTask = TurnToWall;
+                    
+                    printf("Next: %d\n", currentTask);                  
+                }
             } else {
                 control->stop();
                 
@@ -126,7 +134,7 @@ void HitButtonStrategy::step(double delta, bool firstRun) {
 
         case TurnToWall: {
             printf("TURNING TO WALL!\n");
-            
+            /*
             int l = sensing->getLeftDistance();
             int r = sensing->getRightDistance();
             
@@ -138,9 +146,12 @@ void HitButtonStrategy::step(double delta, bool firstRun) {
             }
             
             maxDistanceWhileTurning = MAX(maxDistanceWhileTurning, max);
-            
+            */
             if (sensing->getLeftWhisker() || sensing->getRightWhisker()) {
                 control->stop();
+                turningToButton = 0;
+                turningProtection = 0;
+                
                 currentTask = PushTheButton;
                 printf("Next: %d\n", currentTask);  
             } else if (sensing->getLeftBumper() || sensing->getRightBumper()) {
@@ -164,26 +175,39 @@ void HitButtonStrategy::step(double delta, bool firstRun) {
             int l = sensing->getLeftDistance();
             int r = sensing->getRightDistance();
    
-            if (!(sensing->isLeftOnBlack() && sensing->isRightOnBlack())) {
+            if (sensing->getRightLight() > 200) {
+                printf("LIGHT: %d\n", sensing->getRightLight());
+                sensing->getRightLight();
+                victoryBacking = 2;
+                currentTask = VictoryDance;
+                printf("Next: %d\n", currentTask);
+            } else  if (!(sensing->isLeftOnBlack() && sensing->isRightOnBlack())) {
                 control->stop();
                 currentTask = BackTrack;
                 printf("Next: %d\n", currentTask);                  
             } else if (sensing->getLeftBumper() || sensing->getRightBumper()) {
-                control->stop();
+                printf("BUMPER\n");
+                if (bumperReaction) {
+                    control->turnSlow(10 * turnDirection * -1);
+                    bumperReaction = !bumperReaction;
+                } else {
+                    control->moveSlow(-10);
+                    bumperReaction = !bumperReaction;
+                }
             } else if (turningToButton > 0) {
-                control->turnSingle(turnDirection * -1);
-                if (turningToButton < 0)
-                    turningProtection = 0.2;
-            } else if ((turningProtection < 0)  && !(sensing->getLeftWhisker() || sensing->getRightWhisker())) {
-                control->turnSingle(turnDirection * -1);
-                turningToButton = 0.3;
-            }
-                
-            /*} else if ((l < 18) && (r > 13)) {
+                printf("TTB: %f\n", turningToButton);
+                control->turnSlow(10 * turnDirection * -1);
+                turningProtection = 0.5;
+            } else if ((turningProtection <= 0)  && !(sensing->getLeftWhisker() || sensing->getRightWhisker())) {
+                printf("LOST WHISKER\n");
+                control->turnSlow(10 * turnDirection * -1);
+                turningToButton = 0.2;
+            } /*else if ((l < 15) && (r > 15)) {
                 control->turnSlow(15);
-            } else if ((r < 18)  && (l > 13)) {
+            } else if ((r < 15)  && (l > 15)) {
                 control->turnSlow(-15);
-            }*/ else {
+            } */else {
+                printf("FORWARD\n");
                 control->moveSlow(10);
             }
             
@@ -200,6 +224,25 @@ void HitButtonStrategy::step(double delta, bool firstRun) {
                 currentTask = Align;
                 printf("Next: %d\n", currentTask);
             }
+            break;
+        }
+        
+        case VictoryDance: {
+            printf("VDANCE!\n");
+            if (victoryBacking > 0) {
+                control->move(-10);     
+                victoryBacking -= delta;
+                if (victoryBacking <= 0) {
+                    dancing = 5;
+                }
+            } else if (dancing > 0) {
+                dancing -= delta;
+                control->turn(10);
+            } else {
+                currentTask = Align;
+                printf("Next: %d\n", currentTask);                
+            }
+            break;
         }
     }
 }
