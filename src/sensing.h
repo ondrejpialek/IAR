@@ -35,6 +35,7 @@ class Sensing : public InterfaceKitCallbackHandler {
         int getLeftLight();
         int getRightLight();
         int getSonarDistance();
+        double getFrequency();
 };
 
 #endif /* SENSING_H_ */

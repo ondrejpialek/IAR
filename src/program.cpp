@@ -69,10 +69,12 @@ printf("L: %d\n", sensing->getLeftLight());*/
         double diff = (current.tv_sec - old.tv_sec) + ((current.tv_nsec - old.tv_nsec) / NANOSECONDS_PER_SECOND);
         
         printf("T: %f, S: %d\n", diff, strategyIndex);
-        
+        /*
         control->controlTick(diff);
         strategy->step(diff, strategy != oldStrategy);
-        oldStrategy = strategy;
+        oldStrategy = strategy;*/
+        
+        sensing->getFrequency();
         
         msleep(70);
     }

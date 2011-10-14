@@ -10,7 +10,18 @@ Sensing::Sensing() : InterfaceKitCallbackHandler() {
     grayFloorLevel = { 20, 20 };
     for (int i = 0; i < 8; i++) {
         inputReadings[i] = new AveragedArray<int>(0.1);
-        sensorReadings[i] = new AveragedArray<int>(0.3);
+        switch (i+1) {
+            case RightFrontLight:
+            case LeftFrontLight:
+                sensorReadings[i] = new AveragedArray<int>(0.05);
+                break;
+            case LeftIR:
+            case RightIR:
+                sensorReadings[i] = new AveragedArray<int>(0.15);
+                break;
+            default:
+                sensorReadings[i] = new AveragedArray<int>(0.3);
+        }
     }
 }
 
@@ -63,13 +74,13 @@ void Sensing::adjustFloorLevel() {
 int Sensing::getLeftDistance()
 {
     ensureInitialized();
-    return getDistance(1);
+    return getDistance(LeftIR);
 }
 
 int Sensing::getRightDistance()
 {
     ensureInitialized();
-    return getDistance(2);
+    return getDistance(RightIR);
 }
 
 int Sensing::getSonarDistance()
@@ -104,20 +115,41 @@ bool Sensing::getRightBumper()
 
 bool Sensing::isLeftOnBlack() {
     ensureInitialized();
-    return isOnBlack(4);    
+    return isOnBlack(LeftBottomLight);    
 }
 
 bool Sensing::isRightOnBlack() {
     ensureInitialized();
-    return isOnBlack(3);    
+    return isOnBlack(RightBottomLight);    
 }
 
 int Sensing::getRightLight() {
     ensureInitialized();
-    return sensorReadings[5]->getLatest();
+    return sensorReadings[RightFrontLight]->getLatest();
 }
 
 int Sensing::getLeftLight() {
     ensureInitialized();
-    return sensorReadings[6]->getLatest();
+    return sensorReadings[LeftFrontLight]->getLatest();
+}
+
+double Sensing::getFrequency() {
+    int* values;
+    timespec* times;
+    int length = sensorReadings[RightFrontLight]->getLatest(5, values, times);
+    if (length == 0)
+        return 0;
+    
+    int min = values[0], max = values[0];
+    for (int i = 0; i < count; i++) {
+        if (values[i] < min)
+            min = values[i];
+        if (values[i] > max)
+            max = values[i];        
+    }
+    
+    printf("MIN: %d, MAX: %d", min, max);
+    delete [] values;
+    delete [] times;
+    return 0;
 }

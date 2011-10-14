@@ -64,9 +64,12 @@ void InterfaceKitCallbackHandler::initialize() {
     }
     
     CPhidgetInterfaceKit_getSensorCount(ifKit, &numSensors);
-    for (i = 0; i < numSensors; i++) {
-        CPhidgetInterfaceKit_setSensorChangeTrigger(ifKit, i, 1);
-    }  
+    CPhidgetInterfaceKit_setSensorChangeTrigger(ifKit, LeftIR, 1);
+    CPhidgetInterfaceKit_setSensorChangeTrigger(ifKit, RightIR, 1);
+    CPhidgetInterfaceKit_setSensorChangeTrigger(ifKit, RightBottomLight, 5);
+    CPhidgetInterfaceKit_setSensorChangeTrigger(ifKit, LeftBottomLight, 5);
+    CPhidgetInterfaceKit_setSensorChangeTrigger(ifKit, RightFrontLight, 20);
+    CPhidgetInterfaceKit_setSensorChangeTrigger(ifKit, LeftFrontLight, 20);
 }
 
 InterfaceKitCallbackHandler::InterfaceKitCallbackHandler() {
