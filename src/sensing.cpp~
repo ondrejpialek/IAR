@@ -134,7 +134,6 @@ int Sensing::getLeftLight() {
 }
 
 double Sensing::getFrequency() {
-  /*
     int count=5;
     int* values;
     timespec* times;
@@ -153,6 +152,5 @@ double Sensing::getFrequency() {
     printf("MIN: %d, MAX: %d", min, max);
     delete [] values;
     delete [] times;
-    */
     return 0;
 }
