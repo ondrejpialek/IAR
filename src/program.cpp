@@ -74,9 +74,10 @@ printf("L: %d\n", sensing->getLeftLight());*/
         strategy->step(diff, strategy != oldStrategy);
         oldStrategy = strategy;*/
         
-        sensing->getFrequency();
+        double f = sensing->getFrequency();
+        printf("FREQUENCY: %f\n", f);
         
-        msleep(70);
+        msleep(1000);
     }
     
     control->stop();
@@ -92,4 +93,4 @@ printf("L: %d\n", sensing->getLeftLight());*/
     power_button_reset();
     
     return 0;
-};
+}

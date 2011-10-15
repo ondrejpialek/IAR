@@ -1,13 +1,18 @@
 #ifndef SENSING_H_
 #define SENSING_H_
 
+#include <time.h>
+
 #include "interfaceKit.h"
 #include "averagedArray.h"
+#include "util.h"
 
 class Sensing : public InterfaceKitCallbackHandler {
     private:        
         AveragedArray<int>* sensorReadings[8];
         AveragedArray<int>* inputReadings[8];
+        timespec cache;
+        double cachedFrequency;
         int grayFloorLevel[2];
         
         int getDistance(int sensor);

@@ -1,6 +1,7 @@
 #include <time.h>
 
-#define NANOSECONDS_PER_SECOND 1E9
+#include "util.h"
+
 #define BUFFLEN 256
 
 template <class T>
@@ -26,7 +27,7 @@ class AveragedArray {
             int lo = hi;
             for (int i = hi; i > hi - count; i--) {
                 timespec age = bufferAge[i % BUFFLEN];
-                double diff = (now.tv_sec - age.tv_sec) + ((now.tv_nsec - age.tv_nsec) / NANOSECONDS_PER_SECOND);
+                double diff = difference(age, now);
                 
                 if (diff > averageInterval) {
                     lo = i;
@@ -64,7 +65,7 @@ class AveragedArray {
             return value;
         }
         
-        int getLatest(double delta, T* values, timespec* times) {
+        int getLatest(double delta, T** values, timespec** times) {
             ensureLatest();
             
             timespec now;
@@ -74,7 +75,7 @@ class AveragedArray {
             int length = 0;
             for (int i = hi; i > hi - count; i--) {
                 timespec age = bufferAge[i % BUFFLEN];
-                double diff = (now.tv_sec - age.tv_sec) + ((now.tv_nsec - age.tv_nsec) / NANOSECONDS_PER_SECOND);
+                double diff = difference(age, now);
                                 
                 if (diff > delta) {
                     break;
@@ -83,14 +84,16 @@ class AveragedArray {
                 }
             }
             
-            values = new T [length];
-            times = new timespec [length];
-            for (int i = 0; i < length; i++) {
-                values[i] = buffer[(hi - i) % BUFFLEN];
-                times[i] = bufferAge[(hi - i) % BUFFLEN];
+            if (length > 0) {
+                *values = new T [length];
+                *times = new timespec [length];
+                for (int i = 0; i < length; i++) {
+                    (*values)[i] = buffer[(hi - length + i + 1) % BUFFLEN];
+                    (*times)[i] = bufferAge[(hi - length + i + 1) % BUFFLEN];
+                }
             }
                 
-            return values;
+            return length;
         }
                
         AveragedArray(double averageInterval) {

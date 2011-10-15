@@ -39,7 +39,7 @@ void InterfaceKitCallbackHandler::ensureInitialized() {
 }
 
 void InterfaceKitCallbackHandler::initialize() {
-    int result, numSensors, i;
+    int result, numSensors;
     const char *err;
     
     CPhidgetInterfaceKit_create(&ifKit);
@@ -68,8 +68,8 @@ void InterfaceKitCallbackHandler::initialize() {
     CPhidgetInterfaceKit_setSensorChangeTrigger(ifKit, RightIR, 1);
     CPhidgetInterfaceKit_setSensorChangeTrigger(ifKit, RightBottomLight, 5);
     CPhidgetInterfaceKit_setSensorChangeTrigger(ifKit, LeftBottomLight, 5);
-    CPhidgetInterfaceKit_setSensorChangeTrigger(ifKit, RightFrontLight, 20);
-    CPhidgetInterfaceKit_setSensorChangeTrigger(ifKit, LeftFrontLight, 20);
+    CPhidgetInterfaceKit_setSensorChangeTrigger(ifKit, RightFrontLight, 10);
+    CPhidgetInterfaceKit_setSensorChangeTrigger(ifKit, LeftFrontLight, 10);
 }
 
 InterfaceKitCallbackHandler::InterfaceKitCallbackHandler() {
