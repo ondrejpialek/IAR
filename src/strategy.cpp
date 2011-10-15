@@ -11,7 +11,7 @@ Strategy::Strategy(Sensing* sensing, Control* control) {
 }
 
 double FindSiteStrategy::getUtility() {
-    double utility = 0.9;
+    double utility = 0.8;
     if (sensing->isLeftOnBlack() || sensing->isRightOnBlack()) {
         utility = 0;
     }
@@ -77,11 +77,11 @@ double HitButtonStrategy::getUtility() {
     double utility = 0;
     
     if (currentTask > Align) {
-        utility = 1;
+        utility = 0.9;
     }
     
     if (sensing->isLeftOnBlack() || sensing->isRightOnBlack()) {
-        utility = 1;
+        utility = 0.9;
     }
     return utility;
 }

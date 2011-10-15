@@ -29,10 +29,10 @@ int main(int argc, char *argv[])
     
   //  Strategy* strategies [] = { new HalfHZDanceStrategy(sensing, control) };
   //  Strategy* strategies [] = { new OneHZDanceStrategy(sensing, control) };
-    Strategy* strategies [] = { new TwoHZDanceStrategy(sensing, control) };
+  //  Strategy* strategies [] = { new TwoHZDanceStrategy(sensing, control) };
    // Strategy* strategies [] = { new FourHZDanceStrategy(sensing, control) };
   //  Strategy* strategies [] = { new SixHZDanceStrategy(sensing, control) };
-  //  Strategy* strategies [] = { new EightHZDanceStrategy(sensing, control) };
+    Strategy* strategies [] = { new EightHZDanceStrategy(sensing, control) };
     int STRATEGIES_COUNT = 1;
     
 
