@@ -60,7 +60,7 @@ bool Sensing::getInput(int sensor) {
 
 bool Sensing::isOnBlack(int sensor) {
     int gray = grayFloorLevel[sensor - 3];
-    bool black = (sensorReadings[sensor]->getLatest() <= gray - 8) || (sensorReadings[sensor]->getLatest() >= gray + 30);
+    bool black = (sensorReadings[sensor]->getLatest() <= gray - 15) || (sensorReadings[sensor]->getLatest() >= gray + 30);
    /* if (black) {
         printf("BLACK DETECTED F: %d, R:%d\n", gray, sensorReadings[sensor]->getLatest());    
     }*/

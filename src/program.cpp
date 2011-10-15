@@ -8,6 +8,7 @@
 #include "control.h"
 #include "sensing.h"
 #include "strategy.h"
+#include "dances.h"
 
 
 int msleep(unsigned long milisec)
@@ -80,7 +81,7 @@ printf("L: %d\n", sensing->getLeftLight());*/
         oldStrategy = strategy;
         
         double f = sensing->getFrequency();
-        printf("FREQUENCY: %f\n", f);
+        //printf("FREQUENCY: %f\n", f);
         
         msleep(50);
     }

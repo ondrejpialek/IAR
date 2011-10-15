@@ -111,7 +111,7 @@ void HitButtonStrategy::step(double delta, bool firstRun) {
             if (!(sensing->getLeftBumper() || sensing->getRightBumper())) {
                 if (fabs(diff) > 3) {
                     control->turnSlow(diff*4);
-                } else if (l > 8) {
+                } else if (l > 10) {
                     control->moveSlow(10);
                 } else {
                     control->stop();
@@ -171,9 +171,6 @@ void HitButtonStrategy::step(double delta, bool firstRun) {
             
             if (turningToButton > 0)
                 turningToButton -= delta;
-            
-            int l = sensing->getLeftDistance();
-            int r = sensing->getRightDistance();
    
             if (sensing->getRightLight() > 200) {
                 printf("LIGHT: %d\n", sensing->getRightLight());
@@ -181,7 +178,7 @@ void HitButtonStrategy::step(double delta, bool firstRun) {
                 victoryBacking = 2;
                 currentTask = VictoryDance;
                 printf("Next: %d\n", currentTask);
-            } else  if (!(sensing->isLeftOnBlack() && sensing->isRightOnBlack())) {
+            } else  if (!(sensing->isLeftOnBlack() || sensing->isRightOnBlack())) {
                 control->stop();
                 currentTask = BackTrack;
                 printf("Next: %d\n", currentTask);                  

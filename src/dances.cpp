@@ -295,15 +295,12 @@ void EightHZDanceStrategy::reset() {
 
 /** GET UTILITY FUNCTIONS **/
 
-double HalfHZDanceStrategy::getUtility() {
-    double utility = 0;
-    
+double HalfHZDanceStrategy::getUtility() {    
     if (!(sensing->isLeftOnBlack() || sensing->isRightOnBlack())) {
-            break;
+        return 0;
     }
     
     double f = sensing->getFrequency();
-    
     
     if (f > 0.3 && f < 0.7) {
         return 1;
