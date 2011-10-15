@@ -27,13 +27,18 @@ int main(int argc, char *argv[])
     Sensing* sensing = new Sensing();    
     Control* control = new Control();    
     
-    Strategy* strategies [] = { new FindSiteStrategy(sensing, control), new HitButtonStrategy(sensing, control) };
-    int STRATEGIES_COUNT = 2;
+    Strategy* strategies [] = { 
+        new FindSiteStrategy(sensing, control), new HitButtonStrategy(sensing, control),
+        new HalfHZDanceStrategy(sensing, control), new OneHZDanceStrategy(sensing, control),
+        new TwoHZDanceStrategy(sensing, control), new FourHZDanceStrategy(sensing, control),
+        new SixHZDanceStrategy(sensing, control), new EightHZDanceStrategy(sensing, control)
+    };
+    int STRATEGIES_COUNT = 8;
     
 
     int pwr = power_button_get_value();
     while(pwr == power_button_get_value()) {
-        msleep(500);
+        msleep(400);
     }
     sensing->adjustFloorLevel();   
 
@@ -69,15 +74,15 @@ printf("L: %d\n", sensing->getLeftLight());*/
         double diff = (current.tv_sec - old.tv_sec) + ((current.tv_nsec - old.tv_nsec) / NANOSECONDS_PER_SECOND);
         
         printf("T: %f, S: %d\n", diff, strategyIndex);
-        /*
+        
         control->controlTick(diff);
         strategy->step(diff, strategy != oldStrategy);
-        oldStrategy = strategy;*/
+        oldStrategy = strategy;
         
         double f = sensing->getFrequency();
         printf("FREQUENCY: %f\n", f);
         
-        msleep(1000);
+        msleep(50);
     }
     
     control->stop();
