@@ -18,8 +18,8 @@ Sensing::Sensing() : InterfaceKitCallbackHandler() {
             case LeftFrontLight:
                 sensorReadings[i] = new AveragedArray<int>(0.05);
                 break;
-            case LeftIR:
-            case RightIR:
+            case TopIR:
+            case BottomIR:
                 sensorReadings[i] = new AveragedArray<int>(0.15);
                 break;
             default:
@@ -35,10 +35,12 @@ Sensing::~Sensing() {
 
 void Sensing::OnSensorChange(int index, int value) {
     sensorReadings[index]->add(value);  
+    
 }
 
 void Sensing::OnInputChange(int index, int value) {
     inputReadings[index]->add(value);
+    
 }
 
 int Sensing::getDistance(int sensor)
@@ -74,16 +76,16 @@ void Sensing::adjustFloorLevel() {
     printf("FLOOR L: %d, R:%d\n", grayFloorLevel[0], grayFloorLevel[1]);
 }
 
-int Sensing::getLeftDistance()
+int Sensing::getTopDistance()
 {
     ensureInitialized();
-    return getDistance(LeftIR);
+    return getDistance(TopIR);
 }
 
-int Sensing::getRightDistance()
+int Sensing::getBottomDistance()
 {
     ensureInitialized();
-    return getDistance(RightIR);
+    return getDistance(BottomIR);
 }
 
 int Sensing::getSonarDistance()
@@ -107,13 +109,13 @@ bool Sensing::getRightWhisker()
 bool Sensing::getLeftBumper()
 {
     ensureInitialized();
-    return getInput(3);
+    return getInput(2);
 }
 
 bool Sensing::getRightBumper()
 {
     ensureInitialized();
-    return getInput(2);
+    return getInput(3);
 }
 
 bool Sensing::isLeftOnBlack() {

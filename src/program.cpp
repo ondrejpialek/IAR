@@ -65,10 +65,10 @@ int main(int argc, char *argv[])
                 strategyIndex = i;
             }
         }
-/*
-printf("R: %d\n", sensing->getRightLight());
 
-printf("L: %d\n", sensing->getLeftLight());*/
+//printf("B: %d\n", sensing->getBottomDistance());
+
+//printf("T: %d\n", sensing->getTopDistance());
 
         old = current;
         clock_gettime(CLOCK_MONOTONIC, &current);  
@@ -78,10 +78,9 @@ printf("L: %d\n", sensing->getLeftLight());*/
         
         control->controlTick(diff);
         strategy->step(diff, strategy != oldStrategy);
-        oldStrategy = strategy;
+        oldStrategy = strategy; 
         
-        double f = sensing->getFrequency();
-        //printf("FREQUENCY: %f\n", f);
+        //double f = sensing->getFrequency();
         
         msleep(50);
     }

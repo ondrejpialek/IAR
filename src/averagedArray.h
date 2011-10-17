@@ -26,12 +26,12 @@ class AveragedArray {
             
             int lo = hi;
             for (int i = hi; i > hi - count; i--) {
+		lo = i;
+	      
                 timespec age = bufferAge[i % BUFFLEN];
                 double diff = difference(age, now);
                 
                 if (diff > averageInterval) {
-                    lo = i;
-                } else {
                     break;
                 }                
             }

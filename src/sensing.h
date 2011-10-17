@@ -29,8 +29,8 @@ class Sensing : public InterfaceKitCallbackHandler {
         
         void adjustFloorLevel();
         
-        int getLeftDistance();
-        int getRightDistance();
+        int getTopDistance();
+        int getBottomDistance();
         bool getLeftWhisker();
         bool getRightWhisker();
         bool getLeftBumper();
