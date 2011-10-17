@@ -19,11 +19,13 @@ Sensing::Sensing() : InterfaceKitCallbackHandler() {
                 sensorReadings[i] = new AveragedArray<int>(0.05);
                 break;
             case TopIR:
+                sensorReadings[i] = new AveragedArray<int>(0.07);
+                break;
             case BottomIR:
-                sensorReadings[i] = new AveragedArray<int>(0.15);
+                sensorReadings[i] = new AveragedArray<int>(0.1);
                 break;
             default:
-                sensorReadings[i] = new AveragedArray<int>(0.3);
+                sensorReadings[i] = new AveragedArray<int>(0.5);
         }
     }
 }
@@ -61,18 +63,18 @@ bool Sensing::getInput(int sensor) {
 }
 
 bool Sensing::isOnBlack(int sensor) {
-    int gray = grayFloorLevel[sensor - 3];
-    bool black = (sensorReadings[sensor]->getLatest() <= gray - 15) || (sensorReadings[sensor]->getLatest() >= gray + 30);
-   /* if (black) {
-        printf("BLACK DETECTED F: %d, R:%d\n", gray, sensorReadings[sensor]->getLatest());    
+    int gray = grayFloorLevel[sensor - RightBottomLight];
+    bool black = (sensorReadings[sensor]->getLatest() < gray - 10) || (sensorReadings[sensor]->getLatest() >= gray + 20);
+    /*if (!black) {
+       printf("BLACK LOST (%d) (l, c, u): (%d, %d, %d)\n", sensor, gray - 10, sensorReadings[sensor]->getLatest(), gray + 20);    
     }*/
     return black;
 }
 
 void Sensing::adjustFloorLevel() {
     ensureInitialized();
-    grayFloorLevel[0] = sensorReadings[3]->getLatest();
-    grayFloorLevel[1] = sensorReadings[4]->getLatest();
+    grayFloorLevel[0] = sensorReadings[RightBottomLight]->getLatest();
+    grayFloorLevel[1] = sensorReadings[LeftBottomLight]->getLatest();
     printf("FLOOR L: %d, R:%d\n", grayFloorLevel[0], grayFloorLevel[1]);
 }
 
@@ -138,20 +140,14 @@ int Sensing::getLeftLight() {
     return sensorReadings[LeftFrontLight]->getLatest();
 }
 
-double Sensing::getFrequency() {
-
-    timespec now;
-    clock_gettime(CLOCK_MONOTONIC, &now);
-    
-    if ((cachedFrequency > -1) && (difference(cache, now) < 0.2)) {
-        return cachedFrequency;
-    }
+double Sensing::getFrequency(int sensor) {
+    //printf("SENSOR: %d\n", sensor);
     
     int* values = NULL;
     timespec* times = NULL;
-    int length = sensorReadings[RightFrontLight]->getLatest(5, &values, &times);
+    int length = sensorReadings[sensor]->getLatest(6, &values, &times);
     //printf("L: %d\n", length);
-
+    
     if (length == 0)
         return 0;
     
@@ -164,7 +160,7 @@ double Sensing::getFrequency() {
             max = values[i];        
     }
     //printf("MIN: %d, MAX: %d\n", min, max);
-    
+
     //identify peaks
     int* highs = new int [length]; //0 - low, 1 - high
     int peaks = 0;
@@ -195,7 +191,7 @@ double Sensing::getFrequency() {
     
     double frequency = 0;
     
-    if (peaks > 1) {
+    if (peaks > 2) {
         //find delays between peaks and average them
         double* delays = new double[peaks-1];
         int prev = -1, curr = -1, peak = 0;
@@ -237,8 +233,33 @@ double Sensing::getFrequency() {
     delete [] values;
     delete [] times;
     delete [] highs;
+    
+    //printf("F: %f\n", frequency);
+    
+    return frequency;    
+}
 
+double Sensing::getFrequency() {
+    timespec now;
+    clock_gettime(CLOCK_MONOTONIC, &now);
+
+    if ((cachedFrequency > -1) && (difference(cache, now) < 0.2)) {
+        //printf("CACHED!\n");
+        return cachedFrequency;
+    }
+    
+    double fr = getFrequency(RightFrontLight);
+    double fl = getFrequency(LeftFrontLight);
+    double frequency;
+    
+    if (fr == 0) {
+        frequency = fl;
+    } else {
+        frequency = fr;
+    }
+    
     cachedFrequency = frequency;
     clock_gettime(CLOCK_MONOTONIC, &cache);
+    
     return frequency;
 }

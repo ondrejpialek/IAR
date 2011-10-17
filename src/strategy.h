@@ -8,7 +8,7 @@ class Strategy {
     protected:
         Sensing* sensing;
         Control* control;
-    
+        
     public:
         virtual void step(double delta, bool firstRun) = 0;
         virtual double getUtility() = 0;
@@ -19,7 +19,7 @@ class Strategy {
 class FindSiteStrategy : public Strategy {
     private:
         double wasBumper;
-    
+        
     public:
         virtual void step(double delta, bool firstRun);
         virtual double getUtility();
@@ -27,24 +27,24 @@ class FindSiteStrategy : public Strategy {
         FindSiteStrategy(Sensing* sensing, Control* control) : Strategy(sensing, control) { };
 };
 
-enum HitButtonStrategyTask { Align, PushTheButton, improveDistance, improveAngle };
+enum HitButtonStrategyTask { Align, PushTheButton, improveDistance, improveAngle, MoveToCentre };
 
 class HitButtonStrategy : public Strategy {
     private:
         HitButtonStrategyTask currentTask;
         bool cameFromLeft;
-	double timer;
-	double improveTimer;
+        double bumperTimer;
+        double improveTimer;
         double turningToButton;
         double turningProtection;
         int turnDirection;
         int maxDistanceWhileTurning;
-        bool bumperReaction;
         double victoryBacking;
         double dancing;
         double directionProtection;
+        int qualityAssurance;
         void reset();
-    
+        
     public:
         virtual void step(double delta, bool firstRun);
         virtual double getUtility();

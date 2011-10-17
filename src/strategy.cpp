@@ -21,7 +21,7 @@ double FindSiteStrategy::getUtility() {
 void FindSiteStrategy::step(double delta, bool firstRun) {
     int left = sensing->getTopDistance();
     int right = sensing->getBottomDistance();
-
+    
     
     #ifndef SILENT_STRATEGY
     printf("L:%8d R:%8d\n", left, right);
@@ -75,126 +75,152 @@ void FindSiteStrategy::step(double delta, bool firstRun) {
 
 double HitButtonStrategy::getUtility() {
     double utility = 0;
-    
-    if (currentTask > Align) {
-        utility = 0.9;
-    }
-    
+       
     if (sensing->isLeftOnBlack() || sensing->isRightOnBlack()) {
         utility = 0.9;
     }
     return utility;
 }
 
-void HitButtonStrategy::step(double delta, bool firstRun) {
-    if (directionProtection > 0) {
-        directionProtection -= delta;    
-    }
-    
+void HitButtonStrategy::step(double delta, bool firstRun) {    
     if (firstRun)
         reset();
     
+    if (currentTask != Align) {
+        qualityAssurance = 3;    
+    }
+    
     switch (currentTask) {
         case Align: {
-
-	  printf("ALIGNING!\n");
-	  
-	  if (sensing->getLeftBumper() || sensing->getRightBumper()) {
-	    printf("HIT BUMPERS!");
-	    control->moveSlow(-20);
-	  }
-	  else if (sensing->getRightWhisker() || sensing->getLeftWhisker()) {
-	    printf("HIT WHISKERS!");
-	    control->moveSlow(20);
-	  }
-	  else {
-	    
-	    int t = sensing->getTopDistance();
-	    int b = sensing->getBottomDistance();
-	    
-	    if ((b == 0) || (b >= t)) {
-	      printf("BOTTOM SENSOR = 0");
-	      turnDirection = -turnDirection;
-	      control->turnSlow(turnDirection*30);
-	    }
-	    else if ((t > b+40) && (t < b+90)) {
-	      printf("SENSOR DIFFERENCE!");
-	      control->stop();
-	      currentTask = PushTheButton;
-	    }
-	    else if (t == 0) {
-	      printf("TOP SENSOR = 0");
-	      control->stop();
-	      currentTask = PushTheButton;
-	    }
-	    else {
-	      control->turnSlow(turnDirection*30);
-	    }
-	    break;
-	  }
-	  break;
-	}
-	
+            
+            printf("ALIGNING!\n");
+            
+            if (sensing->getLeftBumper() || sensing->getRightBumper()) {
+                printf("HIT BUMPERS!\n");
+                control->moveSlow(-20);
+            }
+            else if (sensing->getRightWhisker() || sensing->getLeftWhisker()) {
+                printf("HIT WHISKERS!\n");
+                improveTimer = 0.5;
+                currentTask = MoveToCentre;
+            }
+            else {
+                if (directionProtection > 0) {
+                    directionProtection -= delta;
+                }
+                
+                int t = sensing->getTopDistance();
+                int b = sensing->getBottomDistance();
+                
+                printf("D: t:%d, b:%d\n", t, b);
+                
+                if ((b == 0) || (b > 100)) {
+                    printf("BOTTOM SENSOR TRIGGER\n");
+                    if (directionProtection > 0) {  
+                        control->turnSingle(turnDirection*30);
+                    } else {
+                        printf("DIRECTION CHANGE!\n");
+                        turnDirection *= -1;
+                        directionProtection = 2;
+                        control->turnSingle(turnDirection*30);
+                    }
+                }
+                else if (((t > b+12) || (t == 0))&& (directionProtection <= 0)) {
+                    printf("SENSOR DIFFERENCE: %d!\n", t - b);
+                    control->stop();
+                    qualityAssurance--;
+                    if (qualityAssurance <= 0) {
+                        bumperTimer = 2;
+                        currentTask = PushTheButton;
+                    }
+                    break;
+                }
+                else {
+                    printf("WALL\n");
+                    control->turnSingle(turnDirection*30);
+                }
+            }
+            qualityAssurance = 3;
+            break;
+        }
+        
+        case MoveToCentre: {
+            double modifier = sensing->getRightWhisker() ? -1 : sensing->getLeftWhisker() ? 1 : turnDirection;
+            printf("MOVING TO CENTRE\n");
+            improveTimer -= delta;
+            if (improveTimer > 0) {
+                control->turnSlow(modifier * 30);
+            } else {
+                improveTimer = 1;
+                currentTask = improveDistance;
+            }
+            break;
+        }
+        
         case PushTheButton: {
-	  timer -= delta;
-	    printf("PUSH THE BUTTON");
-	    
-	    if (sensing->getLeftBumper() || sensing->getRightBumper()) {
-		if (!bumperReaction) {
-		timer = 1.0;
-		bumperReaction=true;
-		control->stop();
-		break;
-		}
-		if (timer>0) {
-		  if ((sensing->getLeftLight() > 400) || (sensing->getRightLight() > 400)) {
-		    timer = 1.0;
-		    break;
-		  }
-		}
-		else {
-		  currentTask = improveAngle;
-		  break;
-		}
-	    }
-	    control->moveSlow(30);
-	    break;
+            printf("PUSH THE BUTTON\n");
+            
+            if (sensing->getLeftBumper() || sensing->getRightBumper()) { 
+                printf("BUMPER\n");
+                control->stop();
+                control->moveSlow(30);
+                if (bumperTimer > 0) {
+                    bumperTimer -= delta;
+                }
+                
+                if (bumperTimer <= 0) {
+                    improveTimer = 0.5;
+                    turnDirection = sensing->getLeftBumper() ? -1 : 1;
+                    currentTask = improveAngle;
+                } else {
+                    if ((sensing->getLeftLight() > 300) || (sensing->getRightLight() > 300)) {
+                        bumperTimer = 1;
+                    }
+                }
+            } else {
+                printf("FWD\n");
+                control->moveSlow(30);
+            }
+            break;
         }        
         
-	case improveDistance: {
-	  printf("IMPROVING DISTANCE");
-	  
-	  improveTimer -= delta;
-	  if (improveTimer > 0) {
-	    control->moveSlow(-10);
-	    break;
-	  }
-	  improveTimer = 0.5;
-	  currentTask = improveAngle;
-	  break;
-	}
+        case improveDistance: {
+            printf("IMPROVING DISTANCE\n");
+            
+            improveTimer -= delta;
+            if (improveTimer > 0) {
+                control->moveSlow(-10);
+            }  else {
+                //improveTimer = 0.5;
+                control->stop();
+                turnDirection *= -1;
+                currentTask = Align;
+            }
+            break;
+        }
         
-	case improveAngle: {
-	  printf("IMPROVING ANGLE");
-	  
-	  improveTimer -= delta;
-	  if (improveTimer > 0) {
-	    control->turnSlow(turnDirection*30);
-	    break;
-	  }
-	  currentTask = PushTheButton;
-	  break;
-	}
+        case improveAngle: {
+            printf("IMPROVING ANGLE\n");
+            
+            improveTimer -= delta;
+            if (improveTimer > 0) {
+                control->turnSingle(turnDirection * 30);
+                break;
+            }
+            improveTimer = 0.7;
+            currentTask = improveDistance;
+            break;
+        }
     }
 }
 
 void HitButtonStrategy::reset() {
     printf("RESET\n");
-    improveTimer = 0.5;
+    directionProtection = 0;
     control->stop();
     currentTask = Align;
+    qualityAssurance = 3;
     cameFromLeft = sensing->isLeftOnBlack() && !sensing->isRightOnBlack();
-    bumperReaction=false;
     if (cameFromLeft) {
         printf("LEFT!!\n");
         turnDirection = 1;

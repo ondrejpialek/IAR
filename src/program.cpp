@@ -35,7 +35,8 @@ int main(int argc, char *argv[])
         new SixHZDanceStrategy(sensing, control), new EightHZDanceStrategy(sensing, control)
     };
     int STRATEGIES_COUNT = 8;
-    
+ 
+    printf("READY!\n");
 
     int pwr = power_button_get_value();
     while(pwr == power_button_get_value()) {
@@ -43,7 +44,6 @@ int main(int argc, char *argv[])
     }
     sensing->adjustFloorLevel();   
 
-    
     timespec current;
     timespec old;
     clock_gettime(CLOCK_MONOTONIC, &current);
@@ -80,7 +80,8 @@ int main(int argc, char *argv[])
         strategy->step(diff, strategy != oldStrategy);
         oldStrategy = strategy; 
         
-        //double f = sensing->getFrequency();
+        double f = sensing->getFrequency();
+        printf("FREQUENCY: %f\n", f);
         
         msleep(50);
     }

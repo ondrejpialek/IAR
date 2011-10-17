@@ -19,6 +19,7 @@ class Sensing : public InterfaceKitCallbackHandler {
         int getSonarDistance(int sensor);
         bool getInput(int sensor);
         bool isOnBlack(int sensor);
+        double getFrequency(int sensor);
         
     public:
         Sensing();
