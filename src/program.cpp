@@ -75,12 +75,12 @@ int main(int argc, char *argv[])
         double diff = (current.tv_sec - old.tv_sec) + ((current.tv_nsec - old.tv_nsec) / NANOSECONDS_PER_SECOND);
         
         printf("T: %f, S: %d\n", diff, strategyIndex);
-        /*
+        
         control->controlTick(diff);
         strategy->step(diff, strategy != oldStrategy);
         oldStrategy = strategy; 
-        */
-	control->rotateServo();
+        
+	//control->rotateServo();
 	
         double f = sensing->getFrequency();
         printf("FREQUENCY: %f\n", f);
