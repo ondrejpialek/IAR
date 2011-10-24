@@ -45,6 +45,7 @@ class Sensing : public InterfaceKitCallbackHandler {
         double getFrequency();
 	
 	int getHistogram();
+	void buildHistogram(double position);
 };
 
 #endif /* SENSING_H_ */

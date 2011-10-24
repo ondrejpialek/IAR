@@ -9,36 +9,8 @@
 #include <stdio.h>
 #include <phidget21.h>
 #include <cmath>
-
-int AttachHandler(CPhidgetHandle ADVSERVO, void *userptr)
-{
-	int serialNo;
-	const char *name;
-
-	CPhidget_getDeviceName (ADVSERVO, &name);
-	CPhidget_getSerialNumber(ADVSERVO, &serialNo);
-	printf("%s %10d attached!\n", name, serialNo);
-
-	return 0;
-}
-
-int DetachHandler(CPhidgetHandle ADVSERVO, void *userptr)
-{
-	int serialNo;
-	const char *name;
-
-	CPhidget_getDeviceName (ADVSERVO, &name);
-	CPhidget_getSerialNumber(ADVSERVO, &serialNo);
-	printf("%s %10d detached!\n", name, serialNo);
-
-	return 0;
-}
-
-int ErrorHandler(CPhidgetHandle ADVSERVO, void *userptr, int ErrorCode, const char *Description)
-{
-	printf("Error handled. %d - %s\n", ErrorCode, Description);
-	return 0;
-}
+#include "servoControl.h"
+#include "phidget.h"
 
 int PositionChangeHandler(CPhidgetAdvancedServoHandle ADVSERVO, void *usrptr, int Index, double Value)
 {
@@ -46,32 +18,13 @@ int PositionChangeHandler(CPhidgetAdvancedServoHandle ADVSERVO, void *usrptr, in
 	return 0;
 }
 
-//Display the properties of the attached phidget to the screen.  We will be displaying the name, serial number and version of the attached device.
-int display_properties(CPhidgetAdvancedServoHandle phid)
-{
-	int serialNo, version, numMotors;
-	const char* ptr;
-
-	CPhidget_getDeviceType((CPhidgetHandle)phid, &ptr);
-	CPhidget_getSerialNumber((CPhidgetHandle)phid, &serialNo);
-	CPhidget_getDeviceVersion((CPhidgetHandle)phid, &version);
-
-	CPhidgetAdvancedServo_getMotorCount (phid, &numMotors);
-
-	printf("%s\n", ptr);
-	printf("Serial Number: %10d\nVersion: %8d\n# Motors: %d\n", serialNo, version, numMotors);
-
-	return 0;
-}
-
-void MotorControl::ensureInitialized() {
+void ServoControl::ensureInitialized() {
     if (!initialized) {
         int result;
         const char *err;
-	
-	//Declare an advanced servo handle
-	CPhidgetAdvancedServoHandle servo = 0;
 
+	printf("initializing!");
+	
 	//create the advanced servo object
 	CPhidgetAdvancedServo_create(&servo);
 
@@ -96,10 +49,10 @@ void MotorControl::ensureInitialized() {
         }
         
         //Set up some initial acceleration and velocity values
-	CPhidgetAdvancedServo_getAccelerationMin(servo, 0, &minAccel);
-	CPhidgetAdvancedServo_setAcceleration(servo, 0, minAccel*2);
-	CPhidgetAdvancedServo_getVelocityMax(servo, 0, &maxVel);
-	CPhidgetAdvancedServo_setVelocityLimit(servo, 0, maxVel/2);
+//	CPhidgetAdvancedServo_getAccelerationMin(servo, 0, &minAccel);
+//	CPhidgetAdvancedServo_setAcceleration(servo, 0, minAccel*2);
+//	CPhidgetAdvancedServo_getVelocityMax(servo, 0, &maxVel);
+//	CPhidgetAdvancedServo_setVelocityLimit(servo, 0, maxVel/2);
         
         initialized = true;
     }
@@ -114,7 +67,7 @@ ServoControl::~ServoControl() {
 
 void ServoControl::setVelocity(double velocity) {
     ensureInitialized();
-    CPhidgetAdvancedServo_setVelocity((CPhidgetAdvancedServoHandle) servo, 0, velocity);
+    CPhidgetAdvancedServo_setVelocityLimit((CPhidgetAdvancedServoHandle) servo, 0, velocity);
 }
 
 void ServoControl::setAcceleration(double acceleration) {
@@ -124,22 +77,26 @@ void ServoControl::setAcceleration(double acceleration) {
 
 void ServoControl::setPosition(double position) {
     ensureInitialized();
-    CPhidgetAdvancedServo_setPosition((CPhidgetAdvancedServoHandle) servo, 0, position);
+    
+    double max = 232.0;//3.0;
+    double min = -22.0;//9921875;
+    double range = 180.0;
+    
+    double dist = (((max-min)/range) * position) + min;
+    
+    CPhidgetAdvancedServo_setPosition((CPhidgetAdvancedServoHandle) servo, 0, dist);
+    CPhidgetAdvancedServo_setEngaged((CPhidgetAdvancedServoHandle) servo, 0, 1);
 }
 
-void ServoControl::getPosition(double position) {
+double ServoControl::getPosition() {
     ensureInitialized();
     CPhidgetAdvancedServo_getPosition((CPhidgetAdvancedServoHandle) servo, 0, &currentPosition);
-}
-
-int PositionChangeHandler(CPhidgetAdvancedServoHandle servo, void *usrptr, int i, int v)
-{
-    #ifndef SILENT 
-    printf("Input: %d > Value: %d\n", i, v);
-    #endif
     
-    AdvancedServo* handler = (AdvancedServo*)usrptr;
-    sensing->buildHistogram(round(v/125));
-        
-    return 0;
+    double max = 233.0;
+    double min = -22.9921875;
+    double range = 180.0;
+    
+    double dist = ((range/(max-min)) * currentPosition) - min;
+    
+    return dist;
 }

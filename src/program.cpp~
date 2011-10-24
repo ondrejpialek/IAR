@@ -28,7 +28,6 @@ int main(int argc, char *argv[])
     Sensing* sensing = new Sensing();    
     Control* control = new Control();
     
-    
     Strategy* strategies [] = { 
         new FindSiteStrategy(sensing, control), new HitButtonStrategy(sensing, control),
         new HalfHZDanceStrategy(sensing, control), new OneHZDanceStrategy(sensing, control),
@@ -81,6 +80,8 @@ int main(int argc, char *argv[])
         strategy->step(diff, strategy != oldStrategy);
         oldStrategy = strategy; 
         
+	control->rotateServo();
+	
         double f = sensing->getFrequency();
         printf("FREQUENCY: %f\n", f);
         

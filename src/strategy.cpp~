@@ -50,7 +50,7 @@ void FindSiteStrategy::step(double delta, bool firstRun) {
         printf("WT: turning from whisker\n");
         #endif
         control->turn(45);
-    } else if (sonar <= 40) {
+    }  else if (sonar <= 40) {
 	control->turnSingle(30);
         #ifndef SILENT_STRATEGY
         printf("SONAR: turn single left\n");

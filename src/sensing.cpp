@@ -28,6 +28,7 @@ Sensing::Sensing() : InterfaceKitCallbackHandler() {
                 sensorReadings[i] = new AveragedArray<int>(0.5);
         }
     }
+    //histogram = new int [180];
 }
 
 Sensing::~Sensing() {
@@ -239,16 +240,17 @@ double Sensing::getFrequency(int sensor) {
     return frequency;    
 }
 
-void buildHistogram(int position) {
+void Sensing::buildHistogram(double position) {
     int distance = getSonarDistance();
     
-    int histogram [180];
-    histogram[position] = distance;
+    printf("Position %f", position);
+    
+    histogram[(int)position] = distance;
 }
-
+/*
 int getHistogram() {
     return histogram;
-}
+}*/
 
 double Sensing::getFrequency() {
     timespec now;

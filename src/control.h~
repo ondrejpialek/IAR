@@ -2,7 +2,6 @@
 #define CONTROL_H_
 
 #include "motorControl.h"
-#include "servoControl.h"
 
 extern double LEFT_MOTOR_MODIFIER;
 extern double RIGHT_MOTOR_MODIFIER;

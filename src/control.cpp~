@@ -31,7 +31,7 @@ void Control::rotateServo() {
   // 233º
   
       ensureInitialized();
-      servo->setPosition(0.0);
+      servo->setPosition(180.0);
 }
 
 void Control::move(double distance)

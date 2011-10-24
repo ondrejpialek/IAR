@@ -5,7 +5,7 @@
 
 class ServoControl {
     private:
-        CPhidgetAdvancedServoControlHandle servo;
+        CPhidgetAdvancedServoHandle servo;
         bool initialized;
         void ensureInitialized();
 	double currentPosition;
@@ -13,12 +13,12 @@ class ServoControl {
     public: 
         ServoControl();
         virtual ~ServoControl();
-	virtual void OnPositionChange(int index, int value) = 0;
+	//virtual void PositionChange(int index, int value) = 0;
         
-        void setVelocity(int motor, double velocity);
-        void setAcceleration(int motor, double velocity);
-	void setPosition(int motor, double newPosition);
-	int getPosition(int motor, double* currentPosition);
+        void setVelocity(double velocity);
+        void setAcceleration(double velocity);
+	void setPosition(double newPosition);
+	double getPosition(double* currentPosition);
 };
 
 

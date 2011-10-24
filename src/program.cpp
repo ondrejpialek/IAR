@@ -28,7 +28,6 @@ int main(int argc, char *argv[])
     Sensing* sensing = new Sensing();    
     Control* control = new Control();
     
-    
     Strategy* strategies [] = { 
         new FindSiteStrategy(sensing, control), new HitButtonStrategy(sensing, control),
         new HalfHZDanceStrategy(sensing, control), new OneHZDanceStrategy(sensing, control),
@@ -76,11 +75,13 @@ int main(int argc, char *argv[])
         double diff = (current.tv_sec - old.tv_sec) + ((current.tv_nsec - old.tv_nsec) / NANOSECONDS_PER_SECOND);
         
         printf("T: %f, S: %d\n", diff, strategyIndex);
-        
+        /*
         control->controlTick(diff);
         strategy->step(diff, strategy != oldStrategy);
         oldStrategy = strategy; 
-        
+        */
+	control->rotateServo();
+	
         double f = sensing->getFrequency();
         printf("FREQUENCY: %f\n", f);
         
