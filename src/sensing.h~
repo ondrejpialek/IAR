@@ -20,7 +20,7 @@ class Sensing : public InterfaceKitCallbackHandler {
         bool getInput(int sensor);
         bool isOnBlack(int sensor);
         double getFrequency(int sensor);
-	int histogram [180];
+	int histogram [];
         
     public:
         Sensing();

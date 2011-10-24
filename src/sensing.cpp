@@ -93,7 +93,7 @@ int Sensing::getBottomDistance()
 int Sensing::getSonarDistance()
 {
     ensureInitialized();
-    return getSonarDistance(6);
+    return getSonarDistance(7);
 }
 
 bool Sensing::getLeftWhisker()
@@ -237,6 +237,17 @@ double Sensing::getFrequency(int sensor) {
     //printf("F: %f\n", frequency);
     
     return frequency;    
+}
+
+void buildHistogram(int position) {
+    int distance = getSonarDistance();
+    
+    int histogram [180];
+    histogram[position] = distance;
+}
+
+int getHistogram() {
+    return histogram;
 }
 
 double Sensing::getFrequency() {
