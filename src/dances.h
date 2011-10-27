@@ -4,7 +4,7 @@
 #include "control.h"
 #include "sensing.h"
 
-enum DanceStrategyTask { Task1, Task2, Task3 };
+enum DanceStrategyTask { Task1, Task2, Task3, Task4 };
 
 class HalfHZDanceStrategy : public Strategy {
     private:

@@ -19,7 +19,7 @@ Sensing::Sensing() : InterfaceKitCallbackHandler() {
                 sensorReadings[i] = new AveragedArray<int>(0.05);
                 break;
             case TopIR:
-                sensorReadings[i] = new AveragedArray<int>(0.07);
+                sensorReadings[i] = new AveragedArray<int>(0.1);
                 break;
             case BottomIR:
                 sensorReadings[i] = new AveragedArray<int>(0.1);

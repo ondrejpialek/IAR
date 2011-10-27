@@ -35,16 +35,28 @@ void HalfHZDanceStrategy::step(double delta, bool firstRun) {
             
             if (timer <= 0) {
                 currentTask = Task3;
+		timer = 1;
             }
             break;
         }
         
         case Task3: {
-            
-            // DO NOTHING
-            started=false;
+	    control->stop();  
+	  
+            if (timer <= 0) {
+		timer = 0.3;
+                currentTask = Task4;
+            }           
             break;
         }
+        
+	case Task4: {
+	    control->turn(30);
+            if (timer <= 0) {
+                started=false;
+            } 
+            break;	    
+	}
     }
 }
 void HalfHZDanceStrategy::reset() {
@@ -124,17 +136,29 @@ void OneHZDanceStrategy::step(double delta, bool firstRun) {
             
             if (timer <= 0) {
                 currentTask = Task3;
+		timer = 1;
             }
             break;
             
         }
         
         case Task3: {
-            
-            // DO NOTHING
-            started=false;
+	    control->stop();  
+	  
+            if (timer <= 0) {
+		timer = 0.3;
+                currentTask = Task4;
+            }           
             break;
         }
+        
+	case Task4: {
+	    control->turn(30);
+            if (timer <= 0) {
+                started=false;
+            } 
+            break;	    
+	}
     }
 }
 
@@ -201,17 +225,29 @@ void TwoHZDanceStrategy::step(double delta, bool firstRun) {
             
             if ((timer <= 0) && (!stopped)) {
                 currentTask = Task3;
+		timer = 1;
             }
             break;
             
         }
         
         case Task3: {
-            
-            // DO NOTHING
-            started=false;
+	    control->stop();  
+	  
+            if (timer <= 0) {
+		timer = 0.3;
+                currentTask = Task4;
+            }           
             break;
         }
+        
+	case Task4: {
+	    control->turn(30);
+            if (timer <= 0) {
+                started=false;
+            } 
+            break;	    
+	}
     }
 }
 
@@ -261,16 +297,29 @@ void FourHZDanceStrategy::step(double delta, bool firstRun) {
             
             if (timer <= 0) {
                 currentTask = Task3;
+		timer = 1;
             }
             break;
             
         }
+        
         case Task3: {
-            
-            // DO NOTHING
-            started=false;
+	    control->stop();  
+	  
+            if (timer <= 0) {
+		timer = 0.3;
+                currentTask = Task4;
+            }           
             break;
         }
+        
+	case Task4: {
+	    control->turn(30);
+            if (timer <= 0) {
+                started=false;
+            } 
+            break;	    
+	}
     }
 }
 void FourHZDanceStrategy::reset() {
@@ -308,16 +357,28 @@ void SixHZDanceStrategy::step(double delta, bool firstRun) {
             
             if (timer <= 0) {
                 currentTask = Task3;
-                
+                timer = 1;
             }
             break;
         }
+        
         case Task3: {
-            
-            // DO NOTHING
-            started=false;
+	    control->stop();  
+	  
+            if (timer <= 0) {
+		timer = 0.3;
+                currentTask = Task4;
+            }           
             break;
         }
+        
+	case Task4: {
+	    control->turn(30);
+            if (timer <= 0) {
+                started=false;
+            } 
+            break;	    
+	}
     }
 }
 void SixHZDanceStrategy::reset() {
@@ -355,18 +416,29 @@ void EightHZDanceStrategy::step(double delta, bool firstRun) {
             control->move(10);
             
             if (timer <= 0) {
+		timer = 1;
                 currentTask = Task3;
-                
             }
             break;
         }
         
         case Task3: {
-            
-            // DO NOTHING
-            started=false;
+	    control->stop();  
+	  
+            if (timer <= 0) {
+		timer = 0.3;
+                currentTask = Task4;
+            }           
             break;
         }
+        
+	case Task4: {
+	    control->turn(30);
+            if (timer <= 0) {
+                started=false;
+            } 
+            break;	    
+	}
     }
 }
 void EightHZDanceStrategy::reset() {

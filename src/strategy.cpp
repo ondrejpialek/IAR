@@ -29,7 +29,7 @@ void FindSiteStrategy::step(double delta, bool firstRun) {
     
     if (sensing->getLeftBumper() || sensing->getRightBumper()) {
         control->move(-20);
-        wasBumper = 0.8;
+        wasBumper = 0.6;
         #ifndef SILENT_STRATEGY
         printf("BUM: back!\n");
         #endif
@@ -50,7 +50,7 @@ void FindSiteStrategy::step(double delta, bool firstRun) {
         printf("WT: turning from whisker\n");
         #endif
         control->turn(45);
-    } else if (sonar <= 40) {
+    } else if (sonar <= 22) {
 	control->turnSingle(30);
         #ifndef SILENT_STRATEGY
         printf("SONAR: turn single left\n");
@@ -71,7 +71,7 @@ void FindSiteStrategy::step(double delta, bool firstRun) {
 double HitButtonStrategy::getUtility() {
     double utility = 0;
        
-    if (sensing->isLeftOnBlack() || sensing->isRightOnBlack()) {
+    if ((blackPenis > 0) || sensing->isLeftOnBlack() || sensing->isRightOnBlack()) {
         utility = 0.9;
     }
     return utility;
@@ -80,6 +80,11 @@ double HitButtonStrategy::getUtility() {
 void HitButtonStrategy::step(double delta, bool firstRun) {    
     if (firstRun)
         reset();
+    
+    blackPenis -= delta;
+    
+    if (sensing->isLeftOnBlack() || sensing->isRightOnBlack())
+	blackPenis = 2;
     
     if (currentTask != Align) {
         qualityAssurance = 3;    
@@ -92,7 +97,8 @@ void HitButtonStrategy::step(double delta, bool firstRun) {
             
             if (sensing->getLeftBumper() || sensing->getRightBumper()) {
                 printf("HIT BUMPERS!\n");
-                control->moveSlow(-20);
+                improveTimer = 0.5;
+                currentTask = MoveToCentre;
             }
             else if (sensing->getRightWhisker() || sensing->getLeftWhisker()) {
                 printf("HIT WHISKERS!\n");
@@ -116,7 +122,7 @@ void HitButtonStrategy::step(double delta, bool firstRun) {
                     } else {
                         printf("DIRECTION CHANGE!\n");
                         turnDirection *= -1;
-                        directionProtection = 2;
+                        directionProtection = 1;
                         control->turnSingle(turnDirection*30);
                     }
                 }
@@ -140,8 +146,8 @@ void HitButtonStrategy::step(double delta, bool firstRun) {
         }
         
         case MoveToCentre: {
-            double modifier = sensing->getRightWhisker() ? -1 : sensing->getLeftWhisker() ? 1 : turnDirection;
-            printf("MOVING TO CENTRE\n");
+            double modifier = (sensing->getRightWhisker() || sensing->getRightBumper()) ? -1 : (sensing->getLeftWhisker() || sensing->getLeftBumper()) ? 1 : turnDirection;
+            printf("MOVING TO CENTRE; mod: %f\n", modifier);
             improveTimer -= delta;
             if (improveTimer > 0) {
                 control->turnSlow(modifier * 30);
@@ -215,6 +221,7 @@ void HitButtonStrategy::reset() {
     control->stop();
     currentTask = Align;
     qualityAssurance = 3;
+    blackPenis = 2;
     cameFromLeft = sensing->isLeftOnBlack() && !sensing->isRightOnBlack();
     if (cameFromLeft) {
         printf("LEFT!!\n");

@@ -9,7 +9,8 @@ enum DanceStrategyTask { Task1, Task2, Task3 };
 class HalfHZDanceStrategy : public Strategy {
     private:
         DanceStrategyTask currentTask;
-	double timer;
+        double timer;
+        bool started;
 
         void reset();
     
@@ -23,7 +24,8 @@ class HalfHZDanceStrategy : public Strategy {
 class OneHZDanceStrategy : public Strategy {
     private:
         DanceStrategyTask currentTask;
-	double timer;
+        double timer;
+        bool started;
 
         void reset();
     
@@ -38,7 +40,8 @@ class TwoHZDanceStrategy : public Strategy {
     private:
         DanceStrategyTask currentTask;
         double timer;
-
+        bool started;
+        bool stopped;
         void reset();
     
     public:
@@ -51,7 +54,8 @@ class TwoHZDanceStrategy : public Strategy {
 class FourHZDanceStrategy : public Strategy {
     private:
         DanceStrategyTask currentTask;
-	double timer;
+        double timer;
+        bool started;
 	
         void reset();
     
@@ -65,7 +69,8 @@ class FourHZDanceStrategy : public Strategy {
 class SixHZDanceStrategy : public Strategy {
     private:
         DanceStrategyTask currentTask;
-	double timer;
+        double timer;
+        bool started;
 
         void reset();
     
@@ -79,7 +84,8 @@ class SixHZDanceStrategy : public Strategy {
 class EightHZDanceStrategy : public Strategy {
     private:
         DanceStrategyTask currentTask;
-	double timer;
+        double timer;
+        bool started;
 
         void reset();
     

@@ -28,7 +28,7 @@ Sensing::Sensing() : InterfaceKitCallbackHandler() {
                 sensorReadings[i] = new AveragedArray<int>(0.5);
         }
     }
-    histogram = new int [180];
+    //histogram = new int [180];
 }
 
 Sensing::~Sensing() {

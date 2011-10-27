@@ -82,8 +82,8 @@ int main(int argc, char *argv[])
         
 	//control->rotateServo();
 	
-        double f = sensing->getFrequency();
-        printf("FREQUENCY: %f\n", f);
+        //double f = sensing->getFrequency();
+        printf("DISTANCES: top %d, bottom %d, sonar %d\n", sensing->getTopDistance(), sensing->getBottomDistance(), sensing->getSonarDistance());
         
         msleep(50);
     }
