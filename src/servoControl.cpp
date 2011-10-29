@@ -11,11 +11,42 @@
 #include <cmath>
 #include "servoControl.h"
 #include "phidget.h"
+#include "sensing.h"
 
-int PositionChangeHandler(CPhidgetAdvancedServoHandle ADVSERVO, void *usrptr, int Index, double Value)
+int PositionChangeHandler(CPhidgetAdvancedServoHandle ADVSERVO, void *usrptr, int i, double v)
 {
-	printf("Motor: %d > Current Position: %f\n", Index, Value);
+	printf("Motor: %d > Current Position: %f\n", i, v);
+	ServoControl* handler = (ServoControl*)usrptr;
+	handler->OnPositionChange(i, v);
+	
 	return 0;
+}
+
+void ServoControl::OnPositionChange(int i, double v) {
+    if(moving) {
+	if (v < 1) {
+	  setPosition(180);
+	} else if (v > 179) {
+	    setPosition(0);
+	}
+    }
+}
+
+void ServoControl::doScan() {
+    moving = true;  
+    
+    double position = getPosition();
+    
+    if (position < 1) {
+      setPosition(180);
+    } else {
+	setPosition(0);
+    }
+}
+
+void ServoControl::fix() {
+    moving = false;
+    setPosition(90);
 }
 
 void ServoControl::ensureInitialized() {
@@ -35,7 +66,7 @@ void ServoControl::ensureInitialized() {
 
 	//Registers a callback that will run when the motor position is changed.
 	//Requires the handle for the Phidget, the function that will be called, and an arbitrary pointer that will be supplied to the callback function (may be NULL).
-	CPhidgetAdvancedServo_set_OnPositionChange_Handler(servo, PositionChangeHandler, NULL);
+	CPhidgetAdvancedServo_set_OnPositionChange_Handler(servo, PositionChangeHandler, this);
 
 	//open the device for connections
 	CPhidget_open((CPhidgetHandle)servo, -1);
@@ -47,20 +78,23 @@ void ServoControl::ensureInitialized() {
             printf("Problem waiting for attachment: %s\n", err);
             throw - 1;
         }
-        
+        double maxVel;
         //Set up some initial acceleration and velocity values
 //	CPhidgetAdvancedServo_getAccelerationMin(servo, 0, &minAccel);
 //	CPhidgetAdvancedServo_setAcceleration(servo, 0, minAccel*2);
-//	CPhidgetAdvancedServo_getVelocityMax(servo, 0, &maxVel);
-//	CPhidgetAdvancedServo_setVelocityLimit(servo, 0, maxVel/2);
+	//CPhidgetAdvancedServo_getVelocityMax(servo, 0, &maxVel);
+	//CPhidgetAdvancedServo_setVelocityLimit(servo, 0, maxVel/4);
         
         initialized = true;
+	setPosition(0.0);
+	CPhidgetAdvancedServo_setEngaged((CPhidgetAdvancedServoHandle) servo, 0, 1);
     }
 }
 
 ServoControl::ServoControl() { }
 
 ServoControl::~ServoControl() {
+    CPhidgetAdvancedServo_setEngaged((CPhidgetAdvancedServoHandle) servo, 0, 0);
     CPhidget_close((CPhidgetHandle) servo);
     CPhidget_delete((CPhidgetHandle) servo);  
 }
@@ -78,25 +112,13 @@ void ServoControl::setAcceleration(double acceleration) {
 void ServoControl::setPosition(double position) {
     ensureInitialized();
     
-    double max = 232.0;//3.0;
-    double min = -22.0;//9921875;
-    double range = 180.0;
-    
-    double dist = (((max-min)/range) * position);
-    
-    CPhidgetAdvancedServo_setPosition((CPhidgetAdvancedServoHandle) servo, 0, dist);
-    CPhidgetAdvancedServo_setEngaged((CPhidgetAdvancedServoHandle) servo, 0, 1);
+    CPhidgetAdvancedServo_setPosition((CPhidgetAdvancedServoHandle) servo, 0, position);   
 }
 
 double ServoControl::getPosition() {
     ensureInitialized();
+    
     CPhidgetAdvancedServo_getPosition((CPhidgetAdvancedServoHandle) servo, 0, &currentPosition);
     
-    double max = 233.0;
-    double min = -22.9921875;
-    double range = 180.0;
-    
-    double dist = ((range/(max-min)) * currentPosition) - min;
-    
-    return dist;
+    return currentPosition;
 }

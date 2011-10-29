@@ -12,20 +12,20 @@ Sensing::Sensing() : InterfaceKitCallbackHandler() {
     grayFloorLevel = { 20, 20 };
     cachedFrequency = -1;
     for (int i = 0; i < 8; i++) {
-        inputReadings[i] = new AveragedArray<int>(0.1);
+        inputReadings[i] = new AveragedArray<int>(0, 0.1);
         switch (i+1) {
             case RightFrontLight:
             case LeftFrontLight:
-                sensorReadings[i] = new AveragedArray<int>(0.05);
+                sensorReadings[i] = new AveragedArray<int>(i+1, 0.05);
                 break;
             case TopIR:
-                sensorReadings[i] = new AveragedArray<int>(0.1);
+                sensorReadings[i] = new AveragedArray<int>(i+1, 0.1);
                 break;
             case BottomIR:
-                sensorReadings[i] = new AveragedArray<int>(0.1);
+                sensorReadings[i] = new AveragedArray<int>(i+1, 0.1);
                 break;
             default:
-                sensorReadings[i] = new AveragedArray<int>(0.5);
+                sensorReadings[i] = new AveragedArray<int>(i+1, 0.2);
         }
     }
     //histogram = new int [180];
@@ -42,8 +42,7 @@ void Sensing::OnSensorChange(int index, int value) {
 }
 
 void Sensing::OnInputChange(int index, int value) {
-    inputReadings[index]->add(value);
-    
+    inputReadings[index]->add(value);  
 }
 
 int Sensing::getDistance(int sensor)
@@ -243,14 +242,12 @@ double Sensing::getFrequency(int sensor) {
 void Sensing::buildHistogram(double position) {
     int distance = getSonarDistance();
     
-    printf("Position %f", position);
+    //printf("Position %f", position);
     
     histogram[(int)position] = distance;
 }
-/*
-int getHistogram() {
-    return histogram;
-}*/
+
+
 
 double Sensing::getFrequency() {
     timespec now;

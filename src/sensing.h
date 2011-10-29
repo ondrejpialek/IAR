@@ -44,7 +44,7 @@ class Sensing : public InterfaceKitCallbackHandler {
         int getSonarDistance();
         double getFrequency();
 	
-	int getHistogram();
+	
 	void buildHistogram(double position);
 };
 

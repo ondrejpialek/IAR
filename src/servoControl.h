@@ -9,6 +9,8 @@ class ServoControl {
         bool initialized;
         void ensureInitialized();
 	double currentPosition;
+	bool moving;
+	
         
     public: 
         ServoControl();
@@ -19,6 +21,10 @@ class ServoControl {
         void setAcceleration(double velocity);
 	void setPosition(double newPosition);
 	double getPosition();
+	void OnPositionChange(int i, double v);
+	
+	void doScan();
+	void fix();
 };
 
 

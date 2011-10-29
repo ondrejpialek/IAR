@@ -27,6 +27,7 @@ int main(int argc, char *argv[])
 {        
     Sensing* sensing = new Sensing();    
     Control* control = new Control();
+    ServoControl* servo = new ServoControl();
     
     Strategy* strategies [] = { 
         new FindSiteStrategy(sensing, control), new HitButtonStrategy(sensing, control),
@@ -44,6 +45,8 @@ int main(int argc, char *argv[])
     }
     sensing->adjustFloorLevel();   
 
+    servo->doScan();
+    
     timespec current;
     timespec old;
     clock_gettime(CLOCK_MONOTONIC, &current);
@@ -75,17 +78,16 @@ int main(int argc, char *argv[])
         double diff = (current.tv_sec - old.tv_sec) + ((current.tv_nsec - old.tv_nsec) / NANOSECONDS_PER_SECOND);
         
         printf("T: %f, S: %d\n", diff, strategyIndex);
-        
+	/*
         control->controlTick(diff);
         strategy->step(diff, strategy != oldStrategy);
         oldStrategy = strategy; 
-        
-	//control->rotateServo();
+	*/
 	
         //double f = sensing->getFrequency();
         printf("DISTANCES: top %d, bottom %d, sonar %d\n", sensing->getTopDistance(), sensing->getBottomDistance(), sensing->getSonarDistance());
         
-        msleep(50);
+        msleep(90);
     }
     
     control->stop();
@@ -95,8 +97,9 @@ int main(int argc, char *argv[])
         delete strategies[i];
     }
     
-    delete sensing;
+    delete servo;
     delete control;
+    delete sensing;
     
     power_button_reset();
     

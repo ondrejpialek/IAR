@@ -1,0 +1,20 @@
+Test 1:
+- Dark area (maybe just cooldown)
+- Often found wrong switch 'location' (e.g. wall), wrong IR readings
+
+Test 2 (after addition of sonar outside area detecton):
+- Always on dark area (??)
+
+Test 3 (same as above):
+- Now it worked normally.
+- Sonar distance does help it stay within box, however if objects like e.g. a chair are nearby then the robot can be confused.
+- The robot still gets stuck on the side (like observed last time).
+- Often found wrong switch 'location' (e.g. wall), wrong IR readings - it does eventually find the switch through trial and error
+
+Test 4 (same but changed closed range and long range sonar thresholds):
+- front bumper fell off
+
+Test 5
+- Robot not moving straight when in dark area
+- IR fixed, sonar fixed
+- Maximum sonar distance allows for robot to stay within, need to use that to make it more explorative

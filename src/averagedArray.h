@@ -12,6 +12,7 @@ class AveragedArray {
         T buffer [BUFFLEN];
         timespec bufferAge [BUFFLEN];
         T value;
+	int sensorId;
         int count, bufferHi;
         
         void ensureLatest() {
@@ -32,7 +33,7 @@ class AveragedArray {
                 if (diff > averageInterval) {
                     break;
                 } else {
-                    lo = i;                    
+                    lo = i % BUFFLEN;                    
                 }
             }
             
@@ -49,7 +50,7 @@ class AveragedArray {
             value = avg / cnt;
 	    
 	    if (value == 0) {
-	      printf("ZERO READING, dumping values:\n");
+	      printf("Sensor: %d, ZERO READING, cnt: %d, dumping values:\n", sensorId, cnt);
 	      while (templo != (hi + 1) % BUFFLEN) {
 		printf("buff[%d]: %d\n", templo, buffer[templo]);  
 		templo = (templo+1) % BUFFLEN;
@@ -107,11 +108,12 @@ class AveragedArray {
             return length;
         }
                
-        AveragedArray(double averageInterval) {
+        AveragedArray(int sensorId, double averageInterval) {
             this->averageInterval = averageInterval;
             bufferHi = -1;
             count = 0;
             value = 0;
+	    this->sensorId = sensorId;
         }
         
         ~AveragedArray() {

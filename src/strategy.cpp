@@ -50,10 +50,15 @@ void FindSiteStrategy::step(double delta, bool firstRun) {
         printf("WT: turning from whisker\n");
         #endif
         control->turn(45);
-    } else if (sonar <= 22) {
+    } else if (sonar < 25) {
 	control->turnSingle(30);
         #ifndef SILENT_STRATEGY
         printf("SONAR: turn single left\n");
+        #endif
+    } else if (sonar > 140) {
+	control->turnSingle(180);
+	#ifndef SILENT_STRATEGY
+        printf("SONAR: facing outside\n");
         #endif
     } else if ((top < 6 || top > 500) && (bottom < 6 || bottom > 500)) {
         control->move(20);
@@ -115,18 +120,18 @@ void HitButtonStrategy::step(double delta, bool firstRun) {
                 
                 printf("D: t:%d, b:%d\n", t, b);
                 
-                if ((b == 0) || (b > 100)) {
+                if (((b == 0) || (b > 100) && (sensing->getSonarDistance() > 50))) {
                     printf("BOTTOM SENSOR TRIGGER\n");
                     if (directionProtection > 0) {  
                         control->turnSingle(turnDirection*30);
                     } else {
                         printf("DIRECTION CHANGE!\n");
                         turnDirection *= -1;
-                        directionProtection = 1;
+                        directionProtection = 1.5;
                         control->turnSingle(turnDirection*30);
                     }
                 }
-                else if (((t > b+12) || (t == 0))&& (directionProtection <= 0)) {
+                else if ((((t > b+5) || (t == 0)) && (directionProtection <= 0)) && (sensing->getSonarDistance() < 70)) {
                     printf("SENSOR DIFFERENCE: %d!\n", t - b);
                     control->stop();
                     qualityAssurance--;
@@ -150,7 +155,7 @@ void HitButtonStrategy::step(double delta, bool firstRun) {
             printf("MOVING TO CENTRE; mod: %f\n", modifier);
             improveTimer -= delta;
             if (improveTimer > 0) {
-                control->turnSlow(modifier * 30);
+                control->curvedBacking(modifier * 30);
             } else {
                 improveTimer = 1;
                 currentTask = improveDistance;
@@ -180,7 +185,7 @@ void HitButtonStrategy::step(double delta, bool firstRun) {
                 }
             } else {
                 printf("FWD\n");
-                control->moveSlow(30);
+                control->move(30);
             }
             break;
         }        

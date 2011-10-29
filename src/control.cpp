@@ -15,6 +15,7 @@ void Control::ensureInitialized()
     if (!initialized) {
         control = new MotorControl();
 	servo = new ServoControl();
+	
         initialized = true;
     }
 }
@@ -24,14 +25,6 @@ Control::Control() { }
 Control::~Control() {
     delete control;
     delete servo;
-}
-
-void Control::rotateServo() {
-  // -22.9921875º
-  // 233º
-  
-      ensureInitialized();
-      servo->setPosition(0.0);
 }
 
 void Control::move(double distance)
@@ -48,6 +41,26 @@ void Control::move(double distance)
     control->setVelocity(0, LEFT_MOTOR_MODIFIER * modifier * 100.00);
     control->setAcceleration(1, RIGHT_MOTOR_MODIFIER * ACCELERATION);
     control->setVelocity(1, RIGHT_MOTOR_MODIFIER * modifier * 100.00);
+    remaining = (modifier * distance) / 10;
+}
+
+void Control::curvedBacking(double distance)
+{
+    ensureInitialized();
+    
+    double modifier = -1;
+    if (distance < 0) {
+      control->setAcceleration(0, LEFT_MOTOR_MODIFIER * ACCELERATION);
+      control->setVelocity(0, LEFT_MOTOR_MODIFIER * modifier * 50.00);
+      control->setAcceleration(1, RIGHT_MOTOR_MODIFIER * ACCELERATION);
+      control->setVelocity(1, RIGHT_MOTOR_MODIFIER * modifier * 100.00);
+    }
+    else {
+      control->setAcceleration(0, LEFT_MOTOR_MODIFIER * ACCELERATION);
+      control->setVelocity(0, LEFT_MOTOR_MODIFIER * modifier * 100.00);
+      control->setAcceleration(1, RIGHT_MOTOR_MODIFIER * ACCELERATION);
+      control->setVelocity(1, RIGHT_MOTOR_MODIFIER * modifier * 50.00);
+    }
     remaining = (modifier * distance) / 10;
 }
 
