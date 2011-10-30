@@ -78,7 +78,7 @@ void ServoControl::ensureInitialized() {
             printf("Problem waiting for attachment: %s\n", err);
             throw - 1;
         }
-       // double maxVel;
+        double maxVel;
         //Set up some initial acceleration and velocity values
 //	CPhidgetAdvancedServo_getAccelerationMin(servo, 0, &minAccel);
 //	CPhidgetAdvancedServo_setAcceleration(servo, 0, minAccel*2);

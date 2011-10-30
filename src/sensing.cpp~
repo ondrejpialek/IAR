@@ -99,7 +99,7 @@ int Sensing::getSonarDistance()
 bool Sensing::getLeftWhisker()
 {
     ensureInitialized();
-    return getInput(0);
+    return getInput(4);
 }
 
 bool Sensing::getRightWhisker()

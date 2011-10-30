@@ -29,11 +29,11 @@ int main(int argc, char *argv[])
     Control* control = new Control();
     ServoControl* servo = new ServoControl();
     
-    Strategy* strategies [] = { 
-        new FindSiteStrategy(sensing, control, servo), new HitButtonStrategy(sensing, control, servo),
+    Strategy* strategies [] = { /*
+        new FindSiteStrategy(sensing, control, servo), */new HitButtonStrategy(sensing, control, servo)/*,
         new HalfHZDanceStrategy(sensing, control, servo), new OneHZDanceStrategy(sensing, control, servo),
         new TwoHZDanceStrategy(sensing, control, servo), new FourHZDanceStrategy(sensing, control, servo),
-        new SixHZDanceStrategy(sensing, control, servo), new EightHZDanceStrategy(sensing, control, servo)
+        new SixHZDanceStrategy(sensing, control, servo), new EightHZDanceStrategy(sensing, control, servo)*/
     };
     int STRATEGIES_COUNT = 1;
  

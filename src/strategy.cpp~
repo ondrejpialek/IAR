@@ -160,7 +160,7 @@ void HitButtonStrategy::step(double delta, bool firstRun) {
             if (improveTimer > 0) {
                 control->curvedBacking(modifier * 30);
             } else {
-                improveTimer = 0.7;
+                improveTimer = 1;
                 currentTask = improveDistance;
             }
             break;

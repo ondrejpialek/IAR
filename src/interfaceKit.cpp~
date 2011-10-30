@@ -22,6 +22,8 @@ int InputChangeHandler(CPhidgetInterfaceKitHandle IFK, void *usrptr, int i, int 
     printf("Input: %d > Value: %d\n", i, v);
     #endif
     
+    printf("Sensor: %d > Value: %d\n!", i, v);
+    
     InterfaceKitCallbackHandler* handler = (InterfaceKitCallbackHandler*)usrptr;
     handler->OnInputChange(i, v);
         
