@@ -63,7 +63,7 @@ void FindSiteStrategy::step(double delta, bool firstRun) {
 	#ifndef SILENT_STRATEGY
         printf("SONAR: facing outside\n");
         #endif
-    } else if ((top < 15 || top > 500) && (bottom < 15 || bottom > 500)) {
+    } else if ((top < 6 || top > 500) && (bottom < 6 || bottom > 500)) {
         control->move(20);
         #ifndef SILENT_STRATEGY
         printf("CLEAR: forward\n");
