@@ -45,7 +45,7 @@ class HitButtonStrategy : public Strategy {
         double dancing;
         double directionProtection;
         int qualityAssurance;
-	double darkAreaCooldown;
+        double darkAreaCooldown;
         void reset();
         
     public:

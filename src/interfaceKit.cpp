@@ -9,6 +9,11 @@ int SensorChangeHandler(CPhidgetInterfaceKitHandle IFK, void *usrptr, int i, int
     #ifndef SILENT 
     printf("Sensor: %d > Value: %d\n", i, v);
     #endif
+
+    if (i == 7) {
+        printf("Sensor: %d > Value: %d\n", i, v);
+    }
+
     
     InterfaceKitCallbackHandler* handler = (InterfaceKitCallbackHandler*)usrptr;
     handler->OnSensorChange(i, v);

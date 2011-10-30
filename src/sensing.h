@@ -6,8 +6,11 @@
 #include "interfaceKit.h"
 #include "averagedArray.h"
 #include "util.h"
+#include "servoControl.h"
 
-class Sensing : public InterfaceKitCallbackHandler {
+#define SONAR_DIRECTIONS 3
+
+class Sensing : public InterfaceKitCallbackHandler, public ServoEventHandler {
     private:        
         AveragedArray<int>* sensorReadings[8];
         AveragedArray<int>* inputReadings[8];
@@ -16,11 +19,15 @@ class Sensing : public InterfaceKitCallbackHandler {
         int grayFloorLevel[2];
         
         int getDistance(int sensor);
-        int getSonarDistance(int sensor);
         bool getInput(int sensor);
         bool isOnBlack(int sensor);
         double getFrequency(int sensor);
-	int histogram [180];
+        
+        int latestSonarIndex;
+        int latestSonar;
+        double latestPosition;
+        AveragedArray<int>* sonarReadings[SONAR_DIRECTIONS];
+        int getSonarIndex(double position);
         
     public:
         Sensing();
@@ -28,6 +35,8 @@ class Sensing : public InterfaceKitCallbackHandler {
         
         virtual void OnSensorChange(int index, int value);
         virtual void OnInputChange(int index, int value);
+        
+        virtual void OnPositionChanged(double position);
         
         void adjustFloorLevel();
         
@@ -41,11 +50,8 @@ class Sensing : public InterfaceKitCallbackHandler {
         bool isRightOnBlack();
         int getLeftLight();
         int getRightLight();
-        int getSonarDistance();
+        int getSonarDistance(int section);
         double getFrequency();
-	
-	
-	void buildHistogram(double position);
 };
 
 #endif /* SENSING_H_ */
