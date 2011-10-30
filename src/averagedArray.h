@@ -48,15 +48,15 @@ class AveragedArray {
             }
         
             value = avg / cnt;
-	    
-	    if (value == 0) {
-	      printf("Sensor: %d, ZERO READING, cnt: %d, dumping values:\n", sensorId, cnt);
-	      while (templo != (hi + 1) % BUFFLEN) {
-		printf("buff[%d]: %d\n", templo, buffer[templo]);  
-		templo = (templo+1) % BUFFLEN;
-		  
-	      }	      
-	    }
+            
+            /*
+            if (value == 0) {
+                printf("Sensor: %d, ZERO READING, cnt: %d, dumping values:\n", sensorId, cnt);
+                while (templo != (hi + 1) % BUFFLEN) {
+                    printf("buff[%d]: %d\n", templo, buffer[templo]);  
+                    templo = (templo+1) % BUFFLEN;
+                }	      
+            }*/
         }
         
     public:

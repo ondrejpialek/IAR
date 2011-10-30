@@ -28,6 +28,7 @@ int main(int argc, char *argv[])
     Sensing* sensing = new Sensing();    
     Control* control = new Control();
     ServoControl* servo = new ServoControl();
+    servo->setEventHandler(sensing);
     
     Strategy* strategies [] = { 
         new FindSiteStrategy(sensing, control), new HitButtonStrategy(sensing, control),
@@ -37,15 +38,15 @@ int main(int argc, char *argv[])
     };
     int STRATEGIES_COUNT = 8;
  
+    servo->setPosition(90);
     printf("READY!\n");
 
+    
     int pwr = power_button_get_value();
     while(pwr == power_button_get_value()) {
         msleep(400);
     }
     sensing->adjustFloorLevel();   
-
-    servo->doScan();
     
     timespec current;
     timespec old;
@@ -78,14 +79,14 @@ int main(int argc, char *argv[])
         double diff = (current.tv_sec - old.tv_sec) + ((current.tv_nsec - old.tv_nsec) / NANOSECONDS_PER_SECOND);
         
         printf("T: %f, S: %d\n", diff, strategyIndex);
-	/*
+	
         control->controlTick(diff);
         strategy->step(diff, strategy != oldStrategy);
         oldStrategy = strategy; 
-	*/
+	
 	
         //double f = sensing->getFrequency();
-        printf("DISTANCES: top %d, bottom %d, sonar %d\n", sensing->getTopDistance(), sensing->getBottomDistance(), sensing->getSonarDistance());
+        printf("DISTANCES: top %d, bottom %d, sonar %d\n", sensing->getTopDistance(), sensing->getBottomDistance(), sensing->getSonarDistance(0));
         
         msleep(90);
     }
@@ -97,6 +98,7 @@ int main(int argc, char *argv[])
         delete strategies[i];
     }
     
+    servo->setEventHandler(NULL);
     delete servo;
     delete control;
     delete sensing;

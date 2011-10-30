@@ -43,7 +43,7 @@ class HitButtonStrategy : public Strategy {
         double dancing;
         double directionProtection;
         int qualityAssurance;
-	double blackPenis;
+        double blackPenis;
         void reset();
         
     public:

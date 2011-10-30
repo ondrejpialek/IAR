@@ -28,21 +28,48 @@ Sensing::Sensing() : InterfaceKitCallbackHandler() {
                 sensorReadings[i] = new AveragedArray<int>(i+1, 0.2);
         }
     }
-    //histogram = new int [180];
+    
+    for (int i = 0; i < 3; i++) {
+        sonarReadings[i] = new AveragedArray<int>(0, 0.1);
+    }
+    
+    latestSonarIndex = -1;
+    latestSonar = -1;
 }
 
 Sensing::~Sensing() {
     delete [] inputReadings;
     delete [] sensorReadings;
+    delete [] sonarReadings;
 }
 
 void Sensing::OnSensorChange(int index, int value) {
-    sensorReadings[index]->add(value);  
-    
+    if (index == Sonar) {
+        latestSonar = value;
+        int sonarIndex = getSonarIndex(latestPosition);
+        printf("adding sensor reading %d to position %f (sonar %d)\n", value, latestPosition, sonarIndex);
+        sonarReadings[sonarIndex]->add(value);
+        latestSonarIndex = sonarIndex;
+    } else {
+        sensorReadings[index]->add(value);    
+    }
 }
 
 void Sensing::OnInputChange(int index, int value) {
     inputReadings[index]->add(value);  
+}
+
+int Sensing::getSonarIndex(double position) {
+    double step = (SONAR_MAX - SONAR_MIN) / SONAR_DIRECTIONS;
+    return position / step;
+}
+
+void Sensing::OnPositionChanged(double position) {
+    int last = latestPosition;
+    latestPosition = position;
+    if ((last != getSonarIndex(position)) && (latestSonar > -1)) {
+        OnSensorChange(Sonar, latestSonar);
+    }
 }
 
 int Sensing::getDistance(int sensor)
@@ -53,9 +80,11 @@ int Sensing::getDistance(int sensor)
     return 4080 / (sensorReadings[sensor]->getLatest() - 20);
 }
 
-int Sensing::getSonarDistance(int sensor)
+int Sensing::getSonarDistance(int section)
 {
-    return sensorReadings[sensor]->getLatest() * 1.296;
+    ensureInitialized();
+    printf("requested sonar section %d, array index %d, latest %f\n", section, section + (SONAR_DIRECTIONS / 2), sonarReadings[section + (SONAR_DIRECTIONS / 2)]->getLatest());
+    return sonarReadings[section + (SONAR_DIRECTIONS / 2)]->getLatest() * 1.296;
 }
 
 bool Sensing::getInput(int sensor) {
@@ -88,12 +117,6 @@ int Sensing::getBottomDistance()
 {
     ensureInitialized();
     return getDistance(BottomIR);
-}
-
-int Sensing::getSonarDistance()
-{
-    ensureInitialized();
-    return getSonarDistance(7);
 }
 
 bool Sensing::getLeftWhisker()
@@ -238,16 +261,6 @@ double Sensing::getFrequency(int sensor) {
     
     return frequency;    
 }
-
-void Sensing::buildHistogram(double position) {
-    int distance = getSonarDistance();
-    
-    //printf("Position %f", position);
-    
-    histogram[(int)position] = distance;
-}
-
-
 
 double Sensing::getFrequency() {
     timespec now;

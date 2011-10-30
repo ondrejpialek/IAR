@@ -21,7 +21,9 @@ double FindSiteStrategy::getUtility() {
 void FindSiteStrategy::step(double delta, bool firstRun) {
     int top = sensing->getTopDistance();
     int bottom = sensing->getBottomDistance();
-    int sonar = sensing->getSonarDistance();
+    int sonarLeft = sensing->getSonarDistance(-1);
+    int sonarFront = sensing->getSonarDistance(0);
+    int sonarRight = sensing->getSonarDistance(1);
     
     #ifndef SILENT_STRATEGY
     printf("L:%8d R:%8d\n", left, right);
@@ -50,12 +52,12 @@ void FindSiteStrategy::step(double delta, bool firstRun) {
         printf("WT: turning from whisker\n");
         #endif
         control->turn(45);
-    } else if (sonar < 25) {
+    } else if (sonarFront < 25) {
 	control->turnSingle(30);
         #ifndef SILENT_STRATEGY
         printf("SONAR: turn single left\n");
         #endif
-    } else if (sonar > 140) {
+    } else if (sonarFront > 140) {
 	control->turnSingle(180);
 	#ifndef SILENT_STRATEGY
         printf("SONAR: facing outside\n");
@@ -120,7 +122,7 @@ void HitButtonStrategy::step(double delta, bool firstRun) {
                 
                 printf("D: t:%d, b:%d\n", t, b);
                 
-                if (((b == 0) || (b > 100) && (sensing->getSonarDistance() > 50))) {
+                if (((b == 0) || (b > 100) && (sensing->getSonarDistance(0) > 50))) {
                     printf("BOTTOM SENSOR TRIGGER\n");
                     if (directionProtection > 0) {  
                         control->turnSingle(turnDirection*30);
@@ -131,7 +133,7 @@ void HitButtonStrategy::step(double delta, bool firstRun) {
                         control->turnSingle(turnDirection*30);
                     }
                 }
-                else if ((((t > b+5) || (t == 0)) && (directionProtection <= 0)) && (sensing->getSonarDistance() < 70)) {
+                else if ((((t > b+5) || (t == 0)) && (directionProtection <= 0)) && (sensing->getSonarDistance(0) < 70)) {
                     printf("SENSOR DIFFERENCE: %d!\n", t - b);
                     control->stop();
                     qualityAssurance--;

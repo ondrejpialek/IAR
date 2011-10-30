@@ -5,7 +5,7 @@
 #include <phidget21.h>
 #include <time.h>
 
-enum Sensors { BottomIR = 1, TopIR, RightBottomLight, LeftBottomLight, RightFrontLight, LeftFrontLight  };
+enum Sensors { BottomIR = 1, TopIR, RightBottomLight, LeftBottomLight, RightFrontLight, LeftFrontLight, Sonar  };
 
 class InterfaceKitCallbackHandler {
     private:
