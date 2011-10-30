@@ -9,11 +9,6 @@ int SensorChangeHandler(CPhidgetInterfaceKitHandle IFK, void *usrptr, int i, int
     #ifndef SILENT 
     printf("Sensor: %d > Value: %d\n", i, v);
     #endif
-
-    if (i == 7) {
-        printf("Sensor: %d > Value: %d\n", i, v);
-    }
-
     
     InterfaceKitCallbackHandler* handler = (InterfaceKitCallbackHandler*)usrptr;
     handler->OnSensorChange(i, v);
@@ -26,6 +21,8 @@ int InputChangeHandler(CPhidgetInterfaceKitHandle IFK, void *usrptr, int i, int 
     #ifndef SILENT 
     printf("Input: %d > Value: %d\n", i, v);
     #endif
+    
+    printf("Sensor: %d > Value: %d\n!", i, v);
     
     InterfaceKitCallbackHandler* handler = (InterfaceKitCallbackHandler*)usrptr;
     handler->OnInputChange(i, v);

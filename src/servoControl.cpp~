@@ -11,10 +11,11 @@
 #include <cmath>
 #include "servoControl.h"
 #include "phidget.h"
+#include "sensing.h"
 
 int PositionChangeHandler(CPhidgetAdvancedServoHandle ADVSERVO, void *usrptr, int i, double v)
 {
-	//printf("Motor: %d > Current Position: %f\n", i, v);
+	printf("Motor: %d > Current Position: %f\n", i, v);
 	ServoControl* handler = (ServoControl*)usrptr;
 	handler->OnPositionChange(i, v);
 	
@@ -22,38 +23,30 @@ int PositionChangeHandler(CPhidgetAdvancedServoHandle ADVSERVO, void *usrptr, in
 }
 
 void ServoControl::OnPositionChange(int i, double v) {
-    position = v;
-    
-    if (handler != NULL) {
-        handler->OnPositionChanged(position);
-    }
-    
     if(moving) {
-        if (v < SONAR_MIN + 1) {
-            setPosition(SONAR_MAX);
-        } else if (v > SONAR_MAX - 1) {
-            setPosition(SONAR_MIN);
-        }
+	if (v < 1) {
+	  setPosition(180);
+	} else if (v > 179) {
+	    setPosition(0);
+	}
     }
 }
 
 void ServoControl::doScan() {
-    if (!moving) {
-        moving = true;  
-        
-        double position = getPosition();
-        
-        if (position < 1) {
-            setPosition(SONAR_MAX);
-        } else {
-            setPosition(SONAR_MIN);
-        }
+    moving = true;  
+    
+    double position = getPosition();
+    
+    if (position < 1) {
+      setPosition(180);
+    } else {
+	setPosition(0);
     }
 }
 
 void ServoControl::fix() {
     moving = false;
-    setPosition((SONAR_MAX - SONAR_MIN) / 2);
+    setPosition(90);
 }
 
 void ServoControl::ensureInitialized() {
@@ -79,35 +72,26 @@ void ServoControl::ensureInitialized() {
 	CPhidget_open((CPhidgetHandle)servo, -1);
         
         //get the program to wait for a motor control device to be attached
-        //printf("Waiting for MotorControl to be attached....");
+        printf("Waiting for MotorControl to be attached....");
         if ((result = CPhidget_waitForAttachment((CPhidgetHandle) servo, 10000))) {
             CPhidget_getErrorDescription(result, &err);
-            //printf("Problem waiting for attachment: %s\n", err);
+            printf("Problem waiting for attachment: %s\n", err);
             throw - 1;
         }
-       // double maxVel;
+        double maxVel;
         //Set up some initial acceleration and velocity values
-        //	CPhidgetAdvancedServo_getAccelerationMin(servo, 0, &minAccel);
-        //	CPhidgetAdvancedServo_setAcceleration(servo, 0, minAccel*2);
-        //CPhidgetAdvancedServo_getVelocityMax(servo, 0, &maxVel);
-        //CPhidgetAdvancedServo_setVelocityLimit(servo, 0, maxVel/4);
+//	CPhidgetAdvancedServo_getAccelerationMin(servo, 0, &minAccel);
+//	CPhidgetAdvancedServo_setAcceleration(servo, 0, minAccel*2);
+	//CPhidgetAdvancedServo_getVelocityMax(servo, 0, &maxVel);
+	//CPhidgetAdvancedServo_setVelocityLimit(servo, 0, maxVel/4);
         
         initialized = true;
-        setPosition(0.0);
-        CPhidgetAdvancedServo_setEngaged((CPhidgetAdvancedServoHandle) servo, 0, 1);
+	setPosition(0.0);
+	CPhidgetAdvancedServo_setEngaged((CPhidgetAdvancedServoHandle) servo, 0, 1);
     }
 }
 
-ServoControl::ServoControl() {
-    handler = NULL;
-}
-
-void ServoControl::setEventHandler(ServoEventHandler* handler) {
-    this->handler = handler;
-    if (handler != NULL) {
-        handler->OnPositionChanged(readPosition());
-    }
-}
+ServoControl::ServoControl() { }
 
 ServoControl::~ServoControl() {
     CPhidgetAdvancedServo_setEngaged((CPhidgetAdvancedServoHandle) servo, 0, 0);
@@ -131,12 +115,10 @@ void ServoControl::setPosition(double position) {
     CPhidgetAdvancedServo_setPosition((CPhidgetAdvancedServoHandle) servo, 0, position);   
 }
 
-double ServoControl::readPosition() {
-    CPhidgetAdvancedServo_getPosition((CPhidgetAdvancedServoHandle) servo, 0, &position);    
-    return position;
-}
-
 double ServoControl::getPosition() {
-    ensureInitialized();    
-    return position;
+    ensureInitialized();
+    
+    CPhidgetAdvancedServo_getPosition((CPhidgetAdvancedServoHandle) servo, 0, &currentPosition);
+    
+    return currentPosition;
 }

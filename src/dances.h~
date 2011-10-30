@@ -93,7 +93,7 @@ class EightHZDanceStrategy : public Strategy {
         virtual void step(double delta, bool firstRun);
         virtual double getUtility();
         
-        EightHZDanceStrategy(Sensing* sensing, Control* control, ServoControl* servo) : Strategy(sensing, control, servo) { };
+        EightHZDanceStrategy(Sensing* sensing, Control* control) : Strategy(sensing, control) { };
 };
 
 #endif /* DANCES_H_ */
