@@ -9,7 +9,6 @@
 
 
 Sensing::Sensing() : InterfaceKitCallbackHandler() {
-    grayFloorLevel = { 20, 20 };
     cachedFrequency = -1;
     for (int i = 0; i < 8; i++) {
         inputReadings[i] = new AveragedArray<int>(0, 0.1);
@@ -91,7 +90,7 @@ int Sensing::getDistance(int sensor)
 int Sensing::getSonarDistance(int section)
 {
     ensureInitialized();
-    printf("requested sonar section %d, array index %d, latest %f\n", section, section + (SONAR_DIRECTIONS / 2), sonarReadings[section + (SONAR_DIRECTIONS / 2)]->getLatest());
+    //printf("requested sonar section %d, array index %d, latest %f\n", section, section + (SONAR_DIRECTIONS / 2), sonarReadings[section + (SONAR_DIRECTIONS / 2)]->getLatest());
     return sonarReadings[section + (SONAR_DIRECTIONS / 2)]->getLatest() * 1.296;
 }
 
@@ -99,20 +98,18 @@ bool Sensing::getInput(int sensor) {
     return inputReadings[sensor]->getLatest();
 }
 
-bool Sensing::isOnBlack(int sensor) {
-    int gray = grayFloorLevel[sensor - RightBottomLight];
-    bool black = (sensorReadings[sensor]->getLatest() < gray - 10) || (sensorReadings[sensor]->getLatest() >= gray + 20);
-    /*if (!black) {
-       printf("BLACK LOST (%d) (l, c, u): (%d, %d, %d)\n", sensor, gray - 10, sensorReadings[sensor]->getLatest(), gray + 20);    
-    }*/
-    return black;
-}
-
-void Sensing::adjustFloorLevel() {
-    ensureInitialized();
-    grayFloorLevel[0] = sensorReadings[RightBottomLight]->getLatest();
-    grayFloorLevel[1] = sensorReadings[LeftBottomLight]->getLatest();
-    printf("FLOOR L: %d, R:%d\n", grayFloorLevel[0], grayFloorLevel[1]);
+int Sensing::isOnBlack(int sensor) {
+    int lo, hi;
+    if (sensorReadings[sensor]->getSplits(&lo, &hi)) {
+        int val = sensorReadings[sensor]->getLatest();
+        if ((val < lo) || (val > hi)) {
+            return 1;
+        } else {
+            return 0;
+        }
+    } else {
+        return -1;
+    }
 }
 
 int Sensing::getTopDistance()
@@ -153,12 +150,22 @@ bool Sensing::getRightBumper()
 
 bool Sensing::isLeftOnBlack() {
     ensureInitialized();
-    return isOnBlack(LeftBottomLight);    
+    int black = isOnBlack(LeftBottomLight);
+    if (black != -1) {
+        wasLeftOnBlack = (black == 1);
+    }
+    
+    return wasLeftOnBlack;
 }
 
 bool Sensing::isRightOnBlack() {
     ensureInitialized();
-    return isOnBlack(RightBottomLight);    
+    int black = isOnBlack(RightBottomLight);
+    if (black != -1) {
+        wasRightOnBlack = (black == 1);
+    }
+    
+    return wasRightOnBlack;
 }
 
 int Sensing::getRightLight() {

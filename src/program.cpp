@@ -46,7 +46,6 @@ int main(int argc, char *argv[])
     while(pwr == power_button_get_value()) {
         msleep(400);
     }
-    sensing->adjustFloorLevel();   
     
     timespec current;
     timespec old;

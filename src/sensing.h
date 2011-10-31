@@ -16,11 +16,12 @@ class Sensing : public InterfaceKitCallbackHandler, public ServoEventHandler {
         AveragedArray<int>* inputReadings[8];
         timespec cache;
         double cachedFrequency;
-        int grayFloorLevel[2];
         
         int getDistance(int sensor);
         bool getInput(int sensor);
-        bool isOnBlack(int sensor);
+        bool wasLeftOnBlack;
+        bool wasRightOnBlack;
+        int isOnBlack(int sensor);
         double getFrequency(int sensor);
         
         int latestSonarIndex;
@@ -37,8 +38,6 @@ class Sensing : public InterfaceKitCallbackHandler, public ServoEventHandler {
         virtual void OnInputChange(int index, int value);
         
         virtual void OnPositionChanged(double position);
-        
-        void adjustFloorLevel();
         
         int getTopDistance();
         int getBottomDistance();
