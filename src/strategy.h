@@ -9,7 +9,7 @@ class Strategy {
     protected:
         Sensing* sensing;
         Control* control;
-        ServoControl* servo;
+	ServoControl* servo;
         
     public:
         virtual void step(double delta, bool firstRun) = 0;
@@ -18,19 +18,9 @@ class Strategy {
         Strategy(Sensing* sensing, Control* control, ServoControl* servo);
 };
 
-enum FindSiteStrategyTask { Scan, Turn, Main, Reallign };
-
 class FindSiteStrategy : public Strategy {
     private:
         double wasBumper;
-        double sonarCooldown;
-        double moveTimer;
-        double turnTimer;
-        double distanceFix;
-        int goTo;
-        FindSiteStrategyTask currentTask;
-        
-        void reset();
         
     public:
         virtual void step(double delta, bool firstRun);
@@ -56,8 +46,6 @@ class HitButtonStrategy : public Strategy {
         double directionProtection;
         int qualityAssurance;
         double darkAreaCooldown;
-        double ttl;
-        
         void reset();
         
     public:
