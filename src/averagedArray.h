@@ -158,7 +158,7 @@ class AveragedArray {
                 return true;
             }
             
-            if (getStdDev() < 20) {
+            if (getStdDev() < 30) {
                 *low = -1;
                 *top = -1;
                 return false;

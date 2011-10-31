@@ -15,15 +15,14 @@ Strategy::Strategy(Sensing* sensing, Control* control, ServoControl* servo) {
 double FindSiteStrategy::getUtility() {
     double utility = 0.8;
     if (sensing->isLeftOnBlack() || sensing->isRightOnBlack()) {
-        utility = 0;
+        utility = 0.1;
     }
     return utility;
 }
 
 void FindSiteStrategy::reset() {
-    
     servo->doScan();
-    sonarCooldown = 0.5;
+    sonarCooldown = 0.8;
     currentTask = Scan;
     
 }
@@ -37,6 +36,23 @@ void FindSiteStrategy::step(double delta, bool firstRun) {
     int sonarFront = sensing->getSonarDistance(0);
     int sonarRight = sensing->getSonarDistance(1);
     
+    if ((sonarFront < 20) || (distanceFix > 0)) {
+        if ((sonarFront < 20) && (distanceFix <= 0)) {
+            distanceFix = 0.4;
+        }
+        
+        distanceFix -= delta;
+        
+        int modifier;
+        if (sonarLeft > sonarRight) {
+            modifier = -1;
+        } else {
+            modifier = 1;
+        }
+
+        control->turnSlow(modifier*45);
+    }
+     
     switch (currentTask) {
         case Scan: {
             if (sonarCooldown >= 0) {
@@ -49,7 +65,7 @@ void FindSiteStrategy::step(double delta, bool firstRun) {
                     printf("Within range\n");
                     if (shortestDistance == sonarFront) {
                         goTo = 0;
-                        moveTimer = 1.0;
+                        moveTimer = 0.8;
                         currentTask = Main;
                         break;
                     } else if (shortestDistance == sonarLeft) { 
@@ -70,13 +86,24 @@ void FindSiteStrategy::step(double delta, bool firstRun) {
         
         case Turn: {
             if (turnTimer > 0) {
-                turnTimer -= delta;
-                control->turn(goTo * 30);
+                if (sensing->getLeftBumper() || sensing->getRightBumper()) {
+                    moveTimer = 0.8;
+                    currentTask = Main;
+                } else if ((sensing->getLeftWhisker()) || (sensing->getRightWhisker())) {
+                    control->move(30);
+                } else {
+                    turnTimer -= delta;
+                    control->turn(goTo * 30);
+                }
             } else {
-                sonarCooldown = 0.5; 
+                sonarCooldown = 0.8; 
                 currentTask = Scan; 
             }
             break;
+        }
+        
+        case Reallign: {
+            
         }
         
         case Main: {
@@ -90,66 +117,30 @@ void FindSiteStrategy::step(double delta, bool firstRun) {
                 if (sensing->getLeftBumper() || sensing->getRightBumper()) {
                     
                     control->move(-20);
-                    wasBumper = 0.6;
+                    wasBumper = 0.3;
                     
                     #ifndef SILENT_STRATEGY
                     printf("BUM: back!\n");
                     #endif
-                } else if (sensing->getLeftWhisker()) {
-                    
-                    control->turnSingle(-30);
-                    
-                    #ifndef SILENT_STRATEGY
-                    printf("LW: turn single right\n");
-                    #endif
-                } else if (sensing->getRightWhisker()) {
-                    
-                    control->turnSingle(30);
-                    
-                    #ifndef SILENT_STRATEGY
-                    printf("RW: turn single left\n");
-                    #endif
                 } else if (wasBumper > 0) {
+                    int modifier;
+                    if (sonarLeft > sonarRight) {
+                        modifier = -1;
+                    } else {
+                        modifier = 1;
+                    }
                     
                     wasBumper -= delta;
-                    control->turn(45);
-                    
-                    #ifndef SILENT_STRATEGY
-                    printf("WT: turning from whisker\n");
-                    #endif  
-                } else if (sonarFront < 20) {
-                    
-                    control->turnSingle(30);
-                    
-                    #ifndef SILENT_STRATEGY
-                    printf("SONAR: turn single left\n");
-                    #endif
+                    control->turnSlow(modifier*45);
                 } else {
                     control->move(20);
                 }
             }
             else {
-                sonarCooldown = 0.3;
+                sonarCooldown = 0.8;
                 currentTask = Scan;
             }
-            /*else if (MIN(sonarFront, MIN(sonarLeft, sonarRight)) > 140) {
-            control->turnSingle(180);
-            #ifndef SILENT_STRATEGY
-            printf("SONAR: facing outside\n");
-            #endif
-            } else if ((top < 6 || top > 500) && (bottom < 6 || bottom > 500)) {
-   control->move(20);
-   #ifndef SILENT_STRATEGY
-   printf("CLEAR: forward\n");
-   #endif
-   } else {
-       #ifndef SILENT_STRATEGY
-       printf("EL: forward\n");
-       #endif
-       if (goTo == 0) { control->move(20); }
-       else if (goTo == -1) { control->turn(-30); }
-       else if (goTo == 1) { control->turn(30); }
-       }*/
+
             break;
             }
             
@@ -162,6 +153,10 @@ void FindSiteStrategy::step(double delta, bool firstRun) {
         if ((darkAreaCooldown > 0) || sensing->isLeftOnBlack() || sensing->isRightOnBlack()) {
             utility = 0.9;
         }
+        if (ttl < 0) {
+            ttl += 0.02;
+            return 0;
+        }
         return utility;
     }
     
@@ -169,6 +164,7 @@ void FindSiteStrategy::step(double delta, bool firstRun) {
         if (firstRun)
             reset();
         
+        ttl -= delta;
         darkAreaCooldown -= delta;
         
         if (sensing->isLeftOnBlack() || sensing->isRightOnBlack())
@@ -304,6 +300,7 @@ void FindSiteStrategy::step(double delta, bool firstRun) {
     }
     
     void HitButtonStrategy::reset() {
+        ttl = 15.0;
         printf("RESET\n");
         directionProtection = 0;
         control->stop();
