@@ -18,9 +18,18 @@ class Strategy {
         Strategy(Sensing* sensing, Control* control, ServoControl* servo);
 };
 
+enum FindSiteStrategyTask { Scan, Turn, Main };
+
 class FindSiteStrategy : public Strategy {
     private:
         double wasBumper;
+	double sonarCooldown;
+	double moveTimer;
+	double turnTimer;
+	int goTo;
+	FindSiteStrategyTask currentTask;
+	
+	void reset();
         
     public:
         virtual void step(double delta, bool firstRun);

@@ -5,8 +5,16 @@
 
 #include "strategy.h"
 #include "dances.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 /** STEP FUNCTIONS **/
+
+double getRand() {
+    double r = rand() % 100;
+    return r / 100.000;
+}
 
 void HalfHZDanceStrategy::step(double delta, bool firstRun) {
     if (timer > 0)
@@ -35,31 +43,33 @@ void HalfHZDanceStrategy::step(double delta, bool firstRun) {
             
             if (timer <= 0) {
                 currentTask = Task3;
-		timer = 1;
+                timer = 1;
             }
             break;
         }
         
         case Task3: {
-	    control->stop();  
-	  
+            control->stop();  
+            
             if (timer <= 0) {
-		timer = 0.3;
+                timer = 0.5 + 0.5 * getRand();
                 currentTask = Task4;
             }           
             break;
         }
         
-	case Task4: {
-	    control->turn(30);
+        case Task4: {
+            control->turn(30);
             if (timer <= 0) {
                 started=false;
             } 
-            break;	    
-	}
+            break;      
+        }
     }
 }
 void HalfHZDanceStrategy::reset() {
+    srand ( time(NULL) );
+    
     printf("VD: 0.5\n");
     control->stop();
     currentTask = Task1;
@@ -102,6 +112,8 @@ double OneHZDanceStrategy::getUtility() {
 }
 
 void OneHZDanceStrategy::reset() {
+    srand ( time(NULL) );
+    
     printf("VD: 1\n");
     control->stop();
     currentTask = Task1;
@@ -136,29 +148,29 @@ void OneHZDanceStrategy::step(double delta, bool firstRun) {
             
             if (timer <= 0) {
                 currentTask = Task3;
-		timer = 1;
+                timer = 1;
             }
             break;
             
         }
         
         case Task3: {
-	    control->stop();  
-	  
+            control->stop();  
+            
             if (timer <= 0) {
-		timer = 0.3;
+                timer = 0.5 + 0.5 * getRand();
                 currentTask = Task4;
             }           
             break;
         }
         
-	case Task4: {
-	    control->turn(30);
+        case Task4: {
+            control->turn(30);
             if (timer <= 0) {
                 started=false;
             } 
-            break;	    
-	}
+            break;      
+        }
     }
 }
 
@@ -180,6 +192,8 @@ double TwoHZDanceStrategy::getUtility() {
 }
 
 void TwoHZDanceStrategy::reset() {
+    srand ( time(NULL) );
+    
     printf("VD: 2\n");
     control->stop();
     currentTask = Task1;
@@ -225,29 +239,29 @@ void TwoHZDanceStrategy::step(double delta, bool firstRun) {
             
             if ((timer <= 0) && (!stopped)) {
                 currentTask = Task3;
-		timer = 1;
+                timer = 1;
             }
             break;
             
         }
         
         case Task3: {
-	    control->stop();  
-	  
+            control->stop();  
+            
             if (timer <= 0) {
-		timer = 0.3;
+                timer = 0.5 + 0.5 * getRand();
                 currentTask = Task4;
             }           
             break;
         }
         
-	case Task4: {
-	    control->turn(30);
+        case Task4: {
+            control->turn(30);
             if (timer <= 0) {
                 started=false;
             } 
-            break;	    
-	}
+            break;      
+        }
     }
 }
 
@@ -297,32 +311,34 @@ void FourHZDanceStrategy::step(double delta, bool firstRun) {
             
             if (timer <= 0) {
                 currentTask = Task3;
-		timer = 1;
+                timer = 1;
             }
             break;
             
         }
         
         case Task3: {
-	    control->stop();  
-	  
+            control->stop();  
+            
             if (timer <= 0) {
-		timer = 0.3;
+                timer = 0.5 + 0.5 * getRand();
                 currentTask = Task4;
             }           
             break;
         }
         
-	case Task4: {
-	    control->turn(30);
+        case Task4: {
+            control->turn(30);
             if (timer <= 0) {
                 started=false;
             } 
-            break;	    
-	}
+            break;      
+        }
     }
 }
 void FourHZDanceStrategy::reset() {
+    srand ( time(NULL) );
+    
     printf("VD: 4\n");
     control->stop();
     currentTask = Task1;
@@ -363,25 +379,27 @@ void SixHZDanceStrategy::step(double delta, bool firstRun) {
         }
         
         case Task3: {
-	    control->stop();  
-	  
+            control->stop();  
+            
             if (timer <= 0) {
-		timer = 0.3;
+                timer = 0.5 + 0.5 * getRand();
                 currentTask = Task4;
             }           
             break;
         }
         
-	case Task4: {
-	    control->turn(30);
+        case Task4: {
+            control->turn(30);
             if (timer <= 0) {
                 started=false;
             } 
-            break;	    
-	}
+            break;      
+        }
     }
 }
 void SixHZDanceStrategy::reset() {
+    srand ( time(NULL) );
+    
     printf("VD: 6\n");
     control->stop();
     currentTask = Task1;
@@ -416,32 +434,34 @@ void EightHZDanceStrategy::step(double delta, bool firstRun) {
             control->move(10);
             
             if (timer <= 0) {
-		timer = 1;
+                timer = 1;
                 currentTask = Task3;
             }
             break;
         }
         
         case Task3: {
-	    control->stop();  
-	  
+            control->stop();  
+            
             if (timer <= 0) {
-		timer = 0.3;
+                timer = 0.5 + 0.5 * getRand();
                 currentTask = Task4;
             }           
             break;
         }
         
-	case Task4: {
-	    control->turn(30);
+        case Task4: {
+            control->turn(30);
             if (timer <= 0) {
                 started=false;
             } 
-            break;	    
-	}
+            break;      
+        }
     }
 }
 void EightHZDanceStrategy::reset() {
+    srand ( time(NULL) );
+    
     printf("VD: 8\n");
     control->stop();
     currentTask = Task1;

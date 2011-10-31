@@ -60,8 +60,16 @@ void Sensing::OnInputChange(int index, int value) {
 }
 
 int Sensing::getSonarIndex(double position) {
-    double step = (SONAR_MAX - SONAR_MIN) / SONAR_DIRECTIONS;
-    return position / step;
+    //double step = (SONAR_MAX - SONAR_MIN) / SONAR_DIRECTIONS;
+    //return position / (step+1);
+    
+    if (position < 85) {
+        return 0;
+    } else if (position > 95) {
+        return 2;
+    } else {
+        return 1;
+    }
 }
 
 void Sensing::OnPositionChanged(double position) {

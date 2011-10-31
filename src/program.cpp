@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
         new TwoHZDanceStrategy(sensing, control, servo), new FourHZDanceStrategy(sensing, control, servo),
         new SixHZDanceStrategy(sensing, control, servo), new EightHZDanceStrategy(sensing, control, servo)
     };
-    int STRATEGIES_COUNT = 1;
+    int STRATEGIES_COUNT = 8;
  
     servo->setPosition(90);
     printf("READY!\n");
