@@ -178,7 +178,7 @@ class AveragedArray {
             }
             
             int range = max - min;
-            int offset = 0.2 * range;
+            int offset = 0.3 * range;
             l = min + offset;
             t = max - offset;
             lowLimit = -l;
