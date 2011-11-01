@@ -23,17 +23,19 @@ int PositionChangeHandler(CPhidgetAdvancedServoHandle ADVSERVO, void *usrptr, in
 
 void ServoControl::OnPositionChange(int i, double v) {
     position = v;
+       
+    if(moving) {
+        if (v < SONAR_MIN + 3) {
+            setPosition(SONAR_MAX);
+        } else if (v > SONAR_MAX - 3) {
+            setPosition(SONAR_MIN);
+        }
+    } else {
+        setPosition((SONAR_MAX - SONAR_MIN) / 2);
+    }
     
     if (handler != NULL) {
         handler->OnPositionChanged(position);
-    }
-    
-    if(moving) {
-        if (v < SONAR_MIN + 1) {
-            setPosition(SONAR_MAX);
-        } else if (v > SONAR_MAX - 1) {
-            setPosition(SONAR_MIN);
-        }
     }
 }
 
@@ -85,12 +87,13 @@ void ServoControl::ensureInitialized() {
             //printf("Problem waiting for attachment: %s\n", err);
             throw - 1;
         }
-       // double maxVel;
+        double maxVel;
+        double minAccel;
         //Set up some initial acceleration and velocity values
-        //	CPhidgetAdvancedServo_getAccelerationMin(servo, 0, &minAccel);
-        //	CPhidgetAdvancedServo_setAcceleration(servo, 0, minAccel*2);
-        //CPhidgetAdvancedServo_getVelocityMax(servo, 0, &maxVel);
-        //CPhidgetAdvancedServo_setVelocityLimit(servo, 0, maxVel/4);
+        CPhidgetAdvancedServo_getAccelerationMin(servo, 0, &minAccel);
+        CPhidgetAdvancedServo_setAcceleration(servo, 0, minAccel*2.5);
+        CPhidgetAdvancedServo_getVelocityMax(servo, 0, &maxVel);
+        CPhidgetAdvancedServo_setVelocityLimit(servo, 0, maxVel/1.8);
         
         initialized = true;
         setPosition(0.0);

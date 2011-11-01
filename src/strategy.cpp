@@ -22,7 +22,7 @@ double FindSiteStrategy::getUtility() {
 
 void FindSiteStrategy::reset() {
     servo->doScan();
-    sonarCooldown = 0.8;
+    sonarCooldown = 5;
     currentTask = Scan;
     
 }
@@ -96,7 +96,7 @@ void FindSiteStrategy::step(double delta, bool firstRun) {
                     control->turn(goTo * 30);
                 }
             } else {
-                sonarCooldown = 0.8; 
+                sonarCooldown = 1; 
                 currentTask = Scan; 
             }
             break;
@@ -137,7 +137,7 @@ void FindSiteStrategy::step(double delta, bool firstRun) {
                 }
             }
             else {
-                sonarCooldown = 0.8;
+                sonarCooldown = 5;
                 currentTask = Scan;
             }
 
@@ -171,7 +171,7 @@ void FindSiteStrategy::step(double delta, bool firstRun) {
             darkAreaCooldown = 2;
         
         if (currentTask != Align) {
-            qualityAssurance = 3;    
+            qualityAssurance = 3;
         }
         
         switch (currentTask) {
