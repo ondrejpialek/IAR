@@ -52,7 +52,7 @@ void HalfHZDanceStrategy::step(double delta, bool firstRun) {
             control->stop();  
             
             if (timer <= 0) {
-                timer = 0.5 + 0.5 * getRand();
+                timer = 0.6 + 0.5 * getRand();
                 currentTask = Task4;
             }           
             break;
@@ -158,7 +158,7 @@ void OneHZDanceStrategy::step(double delta, bool firstRun) {
             control->stop();  
             
             if (timer <= 0) {
-                timer = 0.5 + 0.5 * getRand();
+                timer = 0.6 + 0.5 * getRand();
                 currentTask = Task4;
             }           
             break;
@@ -249,7 +249,7 @@ void TwoHZDanceStrategy::step(double delta, bool firstRun) {
             control->stop();  
             
             if (timer <= 0) {
-                timer = 0.5 + 0.5 * getRand();
+                timer = 0.6 + 0.5 * getRand();
                 currentTask = Task4;
             }           
             break;
@@ -321,7 +321,7 @@ void FourHZDanceStrategy::step(double delta, bool firstRun) {
             control->stop();  
             
             if (timer <= 0) {
-                timer = 0.5 + 0.5 * getRand();
+                timer = 0;
                 currentTask = Task4;
             }           
             break;
@@ -382,7 +382,7 @@ void SixHZDanceStrategy::step(double delta, bool firstRun) {
             control->stop();  
             
             if (timer <= 0) {
-                timer = 0.5 + 0.5 * getRand();
+                timer = 0;
                 currentTask = Task4;
             }           
             break;
@@ -444,7 +444,7 @@ void EightHZDanceStrategy::step(double delta, bool firstRun) {
             control->stop();  
             
             if (timer <= 0) {
-                timer = 0.5 + 0.5 * getRand();
+                timer = 0.6 + 0.5 * getRand();
                 currentTask = Task4;
             }           
             break;

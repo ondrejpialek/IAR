@@ -21,13 +21,14 @@ class Control {
         ~Control();
         
         void move(double distance);
-	void curvedBacking(double distance);
+        void curvedBacking(double distance);
         void moveSlow(double distance);
         void turn(double degrees);
         void turnSlow(double degrees);
         void turnSingle(double degrees);
         void stop();
-        void controlTick(double diff);      
+        void controlTick(double diff);    
+        void curvedFronting(double distance);
 };
 
 #endif /* CONTROL_H_ */

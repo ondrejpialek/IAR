@@ -24,7 +24,7 @@ Sensing::Sensing() : InterfaceKitCallbackHandler() {
                 sensorReadings[i] = new AveragedArray<int>(i+1, 0.1);
                 break;
             default:
-                sensorReadings[i] = new AveragedArray<int>(i+1, 0.2);
+                sensorReadings[i] = new AveragedArray<int>(i+1, 0.15);
         }
     }
     
@@ -99,9 +99,11 @@ bool Sensing::getInput(int sensor) {
 }
 
 int Sensing::isOnBlack(int sensor) {
+    printf("GETTING BLACK %d\n", sensor);
     int lo, hi;
     if (sensorReadings[sensor]->getSplits(&lo, &hi)) {
         int val = sensorReadings[sensor]->getLatest();
+        printf("CURRENT %d\n", val);
         if ((val < lo) || (val > hi)) {
             return 1;
         } else {

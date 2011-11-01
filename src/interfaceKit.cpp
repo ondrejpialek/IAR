@@ -72,6 +72,7 @@ void InterfaceKitCallbackHandler::initialize() {
     CPhidgetInterfaceKit_setSensorChangeTrigger(ifKit, LeftBottomLight, 5);
     CPhidgetInterfaceKit_setSensorChangeTrigger(ifKit, RightFrontLight, 10);
     CPhidgetInterfaceKit_setSensorChangeTrigger(ifKit, LeftFrontLight, 10);
+    CPhidgetInterfaceKit_setSensorChangeTrigger(ifKit, Sonar, 1);
 }
 
 InterfaceKitCallbackHandler::InterfaceKitCallbackHandler() {

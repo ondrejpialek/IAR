@@ -108,7 +108,7 @@ class AveragedArray {
         
         int getMean() {
             int m = mean;
-            if (m > 01)
+            if (m > 0)
                 return m;
             
             if (count == 0)
@@ -155,12 +155,15 @@ class AveragedArray {
             if ((l > 0) && (t > 0)) {
                 *low = l;
                 *top = t;
+                printf("REMEMBERED\n");
                 return true;
             }
             
-            if (getStdDev() < 30) {
+            int sdev = getStdDev();
+            if (getStdDev() < 20) {
                 *low = -1;
                 *top = -1;
+                printf("BLACK: LOW STDEV: %d\n", sdev);
                 return false;
             }
                 
@@ -176,13 +179,14 @@ class AveragedArray {
                     max = val;
                 }
             }
-            
+                        
             int range = max - min;
-            int offset = 0.3 * range;
+            int offset = 0.20 * range;
+            printf("BLACK: MIN, MAX, OFFSET: %d, %d, %d\n", min, max, offset);
             l = min + offset;
             t = max - offset;
-            lowLimit = -l;
-            topLimit = -t;
+            lowLimit = l;
+            topLimit = t;
             *low = l;
             *top = t;
             return true;            

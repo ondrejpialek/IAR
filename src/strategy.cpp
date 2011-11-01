@@ -22,7 +22,7 @@ double FindSiteStrategy::getUtility() {
 
 void FindSiteStrategy::reset() {
     servo->doScan();
-    sonarCooldown = 5;
+    sonarCooldown = 4.8;
     currentTask = Scan;
     
 }
@@ -30,15 +30,16 @@ void FindSiteStrategy::reset() {
 void FindSiteStrategy::step(double delta, bool firstRun) {
     if (firstRun) { reset(); }
     
-    //int top = sensing->getTopDistance();
-    //int bottom = sensing->getBottomDistance();
     int sonarLeft = sensing->getSonarDistance(-1);
     int sonarFront = sensing->getSonarDistance(0);
     int sonarRight = sensing->getSonarDistance(1);
     
-    if ((sonarFront < 20) || (distanceFix > 0)) {
+    if (sensing->getLeftBumper() || sensing->getRightBumper()) {
+        moveTimer = 0.8;
+        currentTask = Main;
+    } else if ((sonarFront < 20) || (distanceFix > 0)) {
         if ((sonarFront < 20) && (distanceFix <= 0)) {
-            distanceFix = 0.4;
+            distanceFix = 0.3;
         }
         
         distanceFix -= delta;
@@ -50,7 +51,8 @@ void FindSiteStrategy::step(double delta, bool firstRun) {
             modifier = 1;
         }
 
-        control->turnSlow(modifier*45);
+        control->curvedFronting(modifier*45);
+        return;
     }
      
     switch (currentTask) {
@@ -63,7 +65,7 @@ void FindSiteStrategy::step(double delta, bool firstRun) {
                 printf("shortest %d\n", shortestDistance);
                 if (shortestDistance < 130) {
                     printf("Within range\n");
-                    if (shortestDistance == sonarFront) {
+                    if ((shortestDistance == sonarFront) || (shortestDistance < 30)) {
                         goTo = 0;
                         moveTimer = 0.8;
                         currentTask = Main;
@@ -86,10 +88,7 @@ void FindSiteStrategy::step(double delta, bool firstRun) {
         
         case Turn: {
             if (turnTimer > 0) {
-                if (sensing->getLeftBumper() || sensing->getRightBumper()) {
-                    moveTimer = 0.8;
-                    currentTask = Main;
-                } else if ((sensing->getLeftWhisker()) || (sensing->getRightWhisker())) {
+                if ((sensing->getLeftWhisker()) || (sensing->getRightWhisker())) {
                     control->move(30);
                 } else {
                     turnTimer -= delta;
@@ -117,7 +116,7 @@ void FindSiteStrategy::step(double delta, bool firstRun) {
                 if (sensing->getLeftBumper() || sensing->getRightBumper()) {
                     
                     control->move(-20);
-                    wasBumper = 0.3;
+                    wasBumper = 0.45;
                     
                     #ifndef SILENT_STRATEGY
                     printf("BUM: back!\n");
@@ -137,7 +136,7 @@ void FindSiteStrategy::step(double delta, bool firstRun) {
                 }
             }
             else {
-                sonarCooldown = 5;
+                sonarCooldown = 4.8;
                 currentTask = Scan;
             }
 
@@ -168,7 +167,7 @@ void FindSiteStrategy::step(double delta, bool firstRun) {
         darkAreaCooldown -= delta;
         
         if (sensing->isLeftOnBlack() || sensing->isRightOnBlack())
-            darkAreaCooldown = 2;
+            darkAreaCooldown = 3.5;
         
         if (currentTask != Align) {
             qualityAssurance = 3;
@@ -199,7 +198,7 @@ void FindSiteStrategy::step(double delta, bool firstRun) {
                     
                     printf("D: t:%d, b:%d\n", t, b);
                     
-                    if (((b == 0) || (b > 100)) && (sensing->getSonarDistance(0) > 50)) {
+                    if (((b == 0) || (b > 80)) && (sensing->getSonarDistance(0) > 45)) {
                         printf("BOTTOM SENSOR TRIGGER\n");
                         if (directionProtection > 0) {  
                             control->turnSingle(turnDirection*30);
@@ -210,7 +209,7 @@ void FindSiteStrategy::step(double delta, bool firstRun) {
                             control->turnSingle(turnDirection*30);
                         }
                     }
-                    else if ((((t > b+5) || (t == 0)) && (directionProtection <= 0)) && (sensing->getSonarDistance(0) < 70)) {
+                    else if ((((t > b+5) || (t == 0)) && (directionProtection <= 0)) && (sensing->getSonarDistance(0) < 65)) {
                         printf("SENSOR DIFFERENCE: %d!\n", t - b);
                         control->stop();
                         qualityAssurance--;

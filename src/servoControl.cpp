@@ -63,7 +63,7 @@ void ServoControl::ensureInitialized() {
         int result;
         const char *err;
 
-	printf("initializing!");
+	printf("initializing servo!");
 	
 	//create the advanced servo object
 	CPhidgetAdvancedServo_create(&servo);
@@ -84,16 +84,16 @@ void ServoControl::ensureInitialized() {
         //printf("Waiting for MotorControl to be attached....");
         if ((result = CPhidget_waitForAttachment((CPhidgetHandle) servo, 10000))) {
             CPhidget_getErrorDescription(result, &err);
-            //printf("Problem waiting for attachment: %s\n", err);
+            printf("Problem waiting for attachment: %s\n", err);
             throw - 1;
         }
         double maxVel;
         double minAccel;
         //Set up some initial acceleration and velocity values
         CPhidgetAdvancedServo_getAccelerationMin(servo, 0, &minAccel);
-        CPhidgetAdvancedServo_setAcceleration(servo, 0, minAccel*2.5);
+        CPhidgetAdvancedServo_setAcceleration(servo, 0, minAccel*2.6);
         CPhidgetAdvancedServo_getVelocityMax(servo, 0, &maxVel);
-        CPhidgetAdvancedServo_setVelocityLimit(servo, 0, maxVel/1.8);
+        CPhidgetAdvancedServo_setVelocityLimit(servo, 0, maxVel/1.7);
         
         initialized = true;
         setPosition(0.0);

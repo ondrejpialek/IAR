@@ -51,16 +51,36 @@ void Control::curvedBacking(double distance)
     
     double modifier = 1;
     if (distance < 0) {
-      control->setAcceleration(0, LEFT_MOTOR_MODIFIER * ACCELERATION);
-      control->setVelocity(0, LEFT_MOTOR_MODIFIER * modifier * 40.00);
-      control->setAcceleration(1, RIGHT_MOTOR_MODIFIER * ACCELERATION);
-      control->setVelocity(1, RIGHT_MOTOR_MODIFIER * modifier * 100.00);
+        control->setAcceleration(0, LEFT_MOTOR_MODIFIER * ACCELERATION);
+        control->setVelocity(0, LEFT_MOTOR_MODIFIER * modifier * 40.00);
+        control->setAcceleration(1, RIGHT_MOTOR_MODIFIER * ACCELERATION);
+        control->setVelocity(1, RIGHT_MOTOR_MODIFIER * modifier * 100.00);
     }
     else {
-      control->setAcceleration(0, LEFT_MOTOR_MODIFIER * ACCELERATION);
-      control->setVelocity(0, LEFT_MOTOR_MODIFIER * modifier * 100.00);
-      control->setAcceleration(1, RIGHT_MOTOR_MODIFIER * ACCELERATION);
-      control->setVelocity(1, RIGHT_MOTOR_MODIFIER * modifier * 40.00);
+        control->setAcceleration(0, LEFT_MOTOR_MODIFIER * ACCELERATION);
+        control->setVelocity(0, LEFT_MOTOR_MODIFIER * modifier * 100.00);
+        control->setAcceleration(1, RIGHT_MOTOR_MODIFIER * ACCELERATION);
+        control->setVelocity(1, RIGHT_MOTOR_MODIFIER * modifier * 40.00);
+    }
+    remaining = fabs((modifier * distance) / 10);
+}
+
+void Control::curvedFronting(double distance)
+{
+    ensureInitialized();
+    
+    double modifier = -1;
+    if (distance < 0) {
+        control->setAcceleration(0, LEFT_MOTOR_MODIFIER * ACCELERATION);
+        control->setVelocity(0, LEFT_MOTOR_MODIFIER * modifier * 30.00);
+        control->setAcceleration(1, RIGHT_MOTOR_MODIFIER * ACCELERATION);
+        control->setVelocity(1, RIGHT_MOTOR_MODIFIER * modifier * 100.00);
+    }
+    else {
+        control->setAcceleration(0, LEFT_MOTOR_MODIFIER * ACCELERATION);
+        control->setVelocity(0, LEFT_MOTOR_MODIFIER * modifier * 100.00);
+        control->setAcceleration(1, RIGHT_MOTOR_MODIFIER * ACCELERATION);
+        control->setVelocity(1, RIGHT_MOTOR_MODIFIER * modifier * 30.00);
     }
     remaining = fabs((modifier * distance) / 10);
 }
