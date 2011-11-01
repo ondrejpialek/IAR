@@ -248,23 +248,28 @@ double Sensing::getFrequency(int sensor) {
         }
         averageDelay /= (peaks -1);
         
-        //printf("AVG DELAY: %f\n", averageDelay);
-        
-        double avgSqrDelay = 0;
-        for (int i = 0; i < peaks-1; i++) {
-            double diff = delays[i] - averageDelay;
-            delays[i] = diff * diff;
-            avgSqrDelay += delays[i];
-        }    
-        
-        //printf("ERROR: %f\n", avgSqrDelay);
-        
-        double standardDeviation = sqrt(avgSqrDelay / (peaks - 1));
-        //printf("ST DEV: %f\n", standardDeviation);
-        if (standardDeviation <= 0.1) {
-            frequency = round(10 / averageDelay) / 10;
+        timespec now;
+        clock_gettime(CLOCK_MONOTONIC, &now);
+        double lastPeak = difference(times[curr], now);
+                
+        if (lastPeak < 2.8) {
+            //printf("AVG DELAY: %f\n", averageDelay);
+            
+            double avgSqrDelay = 0;
+            for (int i = 0; i < peaks-1; i++) {
+                double diff = delays[i] - averageDelay;
+                delays[i] = diff * diff;
+                avgSqrDelay += delays[i];
+            }    
+            
+            //printf("ERROR: %f\n", avgSqrDelay);
+            
+            double standardDeviation = sqrt(avgSqrDelay / (peaks - 1));
+            //printf("ST DEV: %f\n", standardDeviation);
+            if (standardDeviation <= 0.1) {
+                frequency = round(10 / averageDelay) / 10;
+            }
         }
-        
         delete [] delays;
     }
     
